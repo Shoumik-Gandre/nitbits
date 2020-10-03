@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'posts',
-    'profiles',
+    'profiles.apps.ProfilesConfig',
     'testapi',
 ]
 
