@@ -1,3 +1,4 @@
 /.vscode
 /backend/src/nst
 /backend/src/nst/*
+/backend/steps_to_remove_app.txt
