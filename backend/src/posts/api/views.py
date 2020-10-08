@@ -22,6 +22,8 @@ from .serializers import (
     CommentSerializerUpdate
 )
 
+from PIL import Image
+
 
 class PostListView(ListAPIView):
     queryset = Post.objects.all()
@@ -57,14 +59,6 @@ class PostCreateView(APIView):
     permissions = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     parser_class = (ImageUploadParser,)
     serializer_class = PostSerializerCreate
-    # def get(self, request):
-    #     return Response({'message': 'Get method for Post Create'})
-
-    # def post(self, request):
-    #     content_image = request.POST['content-image']
-    #     style_image = request.POST['style-image']
-    #     final_image = None  # final image will contain the NST image generated
-    #     return Response({'message': 'Post method for Post Create'})
 
     def post(self, request, format=None):
         if ('content_image' not in request.data) or ('style_image' not in request.data):
@@ -75,6 +69,11 @@ class PostCreateView(APIView):
         _content_image = request.data['content_image']
         _style_image = request.data['style_image']
         # final_image = None  # final image will contain the NST image generated
+        try:
+            Image.open(_content_image).verify()
+            Image.open(_style_image).verify()
+        except:
+            raise ParseError("Unsupported image type")
 
         p = Post(
             title=_title,
