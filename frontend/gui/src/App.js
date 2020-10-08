@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 // import { connect } from 'react-redux';
 // import * as actions from './store/actions/auth';
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import Home from './containers/Home';
-import Login from './containers/Login';
-import Register from './containers/Register';
+import Home from "./containers/Home";
+import Login from "./containers/Login";
+import Register from "./containers/Register";
 
 export default function App(props) {
   return (
