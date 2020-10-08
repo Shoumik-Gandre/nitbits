@@ -1,0 +1,31 @@
+# Post Handling
+# get all posts
+posts/ 
+
+# get post with the <int:pk> primary key
+posts/<int:pk>/
+
+# create post
+posts/create/
+
+# get posts made by user <user>
+posts/user/<user>/
+
+# update post with the <int:pk> primary key
+posts/<int:pk>/update/
+
+# delete post with the <int:pk> primary key
+posts/<int:pk>/delete/'
+
+
+# Comment handling
+posts/comments/'  # get all comments
+
+# Comments on a post with the <int:post> primary key
+posts/<int:post>/comments/
+
+# update comment with the <int:pk> primary key
+posts/comments/<int:pk>/update/
+
+# delete comment with the <int:pk> primary key
+posts/comments/<int:pk>/delete/
