@@ -6,6 +6,9 @@ from .views import (
     PostUpdateView,
     PostDeleteView,
     PostByUserView,
+    PostListViewTop,
+    PostListViewHot,
+    PostListViewNew,
     CommentListView,
     CommentOnPostListView,
     CommentUpdateView,
@@ -14,10 +17,13 @@ from .views import (
 
 urlpatterns = [
     # Post Handling
-    path('', PostListView.as_view(), name='post-list-view'),
-    path('<int:pk>/', PostDetailView.as_view(), name='post-detail-view'),
-    path('create/', PostCreateView.as_view(), name='post-create-view'),
-    path('user/<user>', PostByUserView.as_view(), name='post-user-view'),
+    path('', PostListView.as_view()),
+    path('<int:pk>/', PostDetailView.as_view()),
+    path('create/', PostCreateView.as_view()),
+    path('user/<user>/', PostByUserView.as_view()),
+    path('sortby/top/', PostListViewTop.as_view()),
+    path('sortby/hot/', PostListViewHot.as_view()),
+    path('sortby/new/', PostListViewNew.as_view()),
     path('<int:pk>/update/', PostUpdateView.as_view()),
     path('<int:pk>/delete/', PostDeleteView.as_view()),
 
@@ -26,7 +32,7 @@ urlpatterns = [
     # Comments on a post
     path('<int:post>/comments/', CommentOnPostListView.as_view()),
     # update comment
-    path('comments/<int:pk>/update', CommentUpdateView.as_view()),
+    path('comments/<int:pk>/update/', CommentUpdateView.as_view()),
     # delete comment
-    path('comments/<int:pk>/delete', CommentDeleteView.as_view()),
+    path('comments/<int:pk>/delete/', CommentDeleteView.as_view()),
 ]

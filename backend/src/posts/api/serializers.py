@@ -5,13 +5,20 @@ from ..models import Post, Comment
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'user', 'image', 'description')
+        fields = ('pk', 'title', 'user', 'image', 'description',
+                  'date_published', 'upvotes', 'downvotes')
 
 
 class PostSerializerHiddenUser(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('pk', 'title', 'description')
+
+
+class ReturnCreatedURL(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('image')
 
 
 class PostSerializerCreate(serializers.ModelSerializer):
