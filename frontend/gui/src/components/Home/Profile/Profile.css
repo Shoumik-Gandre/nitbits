@@ -1,0 +1,29 @@
+.profile-wrapper{
+    color: white;
+}
+
+h3{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.user-attr-count{
+    margin-left: 17px;
+}
+
+.user-attr-name{
+
+}
+
+.back-btn{
+    color: blue;
+    font-size: 20px;
+    /* float: right; */
+    cursor: pointer;
+    margin-left: 1100px;
+}
+
+.post-description-wrapper{
+    margin-top: 80px;
+    /* float: right; */
+}

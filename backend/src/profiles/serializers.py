@@ -11,6 +11,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializerFollows(serializers.ModelSerializer):
 
+    user = serializers.IntegerField()
+
     class Meta:
         model = UserProfile
-        fields = ('pk', 'follows')
+        fields = ('pk', 'user')

@@ -1,0 +1,80 @@
+import React, { useState } from "react";
+import {makeStyles} from '@material-ui/core/styles'
+import defaultImagePreview from '../../../../static/images/image_select_01.jpg';
+import './ImageUpload.css';
+
+const useStyles = makeStyles(theme => ({
+    photo: {
+      textAlign: 'center',
+      backgroundColor: 'rgb(28 37 35)',
+      padding:theme.spacing(1)
+    },
+    media: {
+      marginTop: "30px",
+      height: 200
+    },
+}))
+
+function ImageUpload() {
+
+  const classes = useStyles();
+
+  const [file, setFile] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: do something with -> this.state.file
+    console.log("handle uploading-", file);
+  };
+
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      setFile(file);
+      setImagePreviewUrl(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  let $imagePreview = null;
+  if (imagePreviewUrl) {
+    // $imagePreview = <img src={imagePreviewUrl} alt="img" />;
+
+    $imagePreview = ( <div className={classes.photo}>
+                <img
+                  className={classes.media}
+                  // src={'/api/posts/photo/'+post.image}
+                  src={imagePreviewUrl}
+                  />
+              </div> );
+  } else {
+    $imagePreview = (
+            <div className={classes.photo}>
+                <img
+                  className={classes.media}
+                  src={defaultImagePreview}
+                  />
+                  <h3>Please select an Image for Preview</h3>
+            </div> 
+    );
+  }
+
+  return (
+    <div className="previewComponent">
+      <form onSubmit={handleSubmit}>
+        <input className="fileInput" type="file" onChange={handleImageChange} />
+        {/* <button className="submitButton" type="submit" onClick={handleSubmit}>
+          Upload Image
+        </button> */}
+      </form>
+      <div className="imgPreview">{$imagePreview}</div>
+    </div>
+  );
+}
+
+export default ImageUpload;

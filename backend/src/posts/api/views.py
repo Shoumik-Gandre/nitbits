@@ -18,10 +18,16 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
 from rest_framework.exceptions import ParseError
 
-from ..models import Post, Comment
+from ..models import (
+    Post,
+    Comment,
+    Like,
+    DisLike
+)
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
     PostSerializer,
+    ProfilePostSerializer,
     PostSerializerHiddenUser,
     PostSerializerCreate,
     ReturnCreatedURL,
@@ -33,16 +39,17 @@ from PIL import Image
 import os
 # Neural Style Transfer model:
 try:
+    raise ValueError('Just to skip massive reload time during testing')
     from ..nst.nst import NST
     nst_exception = False
 except Exception as e:
-    print('exception')
+    print('nst exception')
     nst_exception = True
 from django.http import JsonResponse
 
 
 class PostListView(ListAPIView):
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
 # sort by :
@@ -53,11 +60,11 @@ class PostListViewHot(ListAPIView):
 
     def get_queryset(self):
         yesterday = timezone.now() - datetime.timedelta(days=1)
-        return (Post.objects.filter(date_published__gte=yesterday).order_by(F('downvotes') - F('upvotes')))
+        return (Post.objects.filter(date_published__gte=yesterday).order_by(F('downvotes') - F('upvotes')).filter(is_public=True))
 
 
 class PostListViewNew(ListAPIView):
-    queryset = Post.objects.order_by('-date_published')
+    queryset = Post.objects.filter(is_public=True).order_by('-date_published')
     serializer_class = PostSerializer
 
 
@@ -65,7 +72,7 @@ class PostListViewTop(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return (Post.objects.order_by(F('downvotes') - F('upvotes')))
+        return (Post.objects.order_by(F('downvotes') - F('upvotes')).filter(is_public=True))
 
 
 class PostByUserView(ListAPIView):
@@ -78,6 +85,20 @@ class PostByUserView(ListAPIView):
 
     def get_queryset(self):
         _user = self.kwargs['user']
+        return Post.objects.filter(user=_user, is_public=True)
+
+
+class PostForProfileView(ListAPIView):
+    """
+    This gives us the Posts posted by a specific user
+    Can be used in:
+    - User Homepage
+    """
+    serializer_class = ProfilePostSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+
+    def get_queryset(self):
+        _user = self.kwargs['user']
         return Post.objects.filter(user=_user)
 
 
@@ -85,7 +106,7 @@ class PostDetailView(RetrieveAPIView):
     """
     Gets a specific Post by id
     """
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
 
@@ -94,7 +115,7 @@ class ImageUploadParser(FileUploadParser):
 
 
 class PostCreateView(APIView):
-    permissions = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
     parser_class = (ImageUploadParser,)
     serializer_class = PostSerializerCreate
 
@@ -133,6 +154,24 @@ class PostCreateView(APIView):
             print(e)
             traceback.print_exc()
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class PostVote(APIView):
+    """
+    ! INCOMPLETE
+    handles likes and dislikes
+    Requires following in post:
+    user, 
+    post,
+    like/dislike=>vote
+    """
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+
+    def post(self, request):
+        vote = request.POST['vote']
+        post = request.POST['post']
+        user = request.user
+        pass
 
 
 class PostUpdateView(UpdateAPIView):
@@ -188,3 +227,21 @@ class CommentDeleteView(DestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+
+
+class PostUpvote(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        post = self.kwargs['post']
+        user = self.kwargs['user']
+        Like.objects.get(post=post, user=request.user)
+
+
+class PostDownvote(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request):
+        post = self.kwargs['post']
+        user = self.kwargs['user']
+        DisLike.objects.get(post=post, user=request.user)

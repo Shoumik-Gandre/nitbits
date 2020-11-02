@@ -1,0 +1,7 @@
+.item {
+  color: rgb(232 230 227) !important;
+}
+
+.ui.secondary.pointing.menu {
+  border-bottom: 2px solid rgb(84 91 94) !important;
+}

@@ -1,0 +1,82 @@
+.App {
+  text-align: center;
+}
+
+body {
+  background-color: rgb(24, 26, 27);
+}
+
+.header-title {
+  font-family: "Dancing Script", cursive;
+  font-size: 35px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  /* margin-right: 3px; */
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(50, 51, 52, 1);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(81, 81, 82, 1);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(81, 81, 82, 1);
+}
+
+.landing-page-wrap {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.header-title {
+  color: rgb(133, 255, 172);
+}

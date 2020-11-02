@@ -1,0 +1,15 @@
+.dashboard-wrapper{
+    color: white;
+}
+
+.MuiInputBase-root{
+    color: white !important;
+}
+
+.MuiInput-underline{
+    color: white !important;
+}
+
+/* .MuiIconButton-label{
+    color: cyan;
+} */

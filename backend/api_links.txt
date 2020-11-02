@@ -29,3 +29,10 @@ posts/comments/<int:pk>/update/
 
 # delete comment with the <int:pk> primary key
 posts/comments/<int:pk>/delete/
+
+
+profiles/follow/
+send post request like {'user': <user-pk>} , the user with that user-pk will be followed 
+
+profiles/unfollow/
+send post request like {'user': <user-pk>} , the user with that user-pk will be unfollowed

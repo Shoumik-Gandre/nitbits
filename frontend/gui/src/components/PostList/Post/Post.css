@@ -1,0 +1,35 @@
+.MuiTypography-colorTextSecondary {
+    color: rgb(134 133 126) !important;
+}
+
+.comments-wrap{
+    overflow-y: scroll;
+    height: 400px;
+}
+
+.no-upvote{
+    color: rgb(133, 255, 172);
+}
+
+.upvote-icon{
+    color: rgb(44, 204, 95);
+    font-size: 50px;
+}
+
+.vote-count{
+    color: 	#2ca5ce;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.downvote-icon{
+    color: #ee393f;
+    font-size: 50px;
+}
+
+.vote-icons-wrapper{
+    float: left;
+    margin-right: 20px;
+    margin-top: 100px;
+}

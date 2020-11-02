@@ -1,0 +1,13 @@
+.cooknits-wrapper{
+    color: white;
+}
+
+#file-upload-button{
+    background-color: black !important;
+    color: cornsilk;
+}
+
+.fileInput{
+    background-color: rgba(255,192,203, 0.5);
+    margin-bottom: 20px;
+}

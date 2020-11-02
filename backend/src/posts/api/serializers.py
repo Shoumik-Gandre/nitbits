@@ -9,6 +9,13 @@ class PostSerializer(serializers.ModelSerializer):
                   'date_published', 'upvotes', 'downvotes')
 
 
+class ProfilePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('pk', 'title', 'user', 'image', 'description',
+                  'date_published', 'upvotes', 'downvotes', 'is_public')
+
+
 class PostSerializerHiddenUser(serializers.ModelSerializer):
     class Meta:
         model = Post

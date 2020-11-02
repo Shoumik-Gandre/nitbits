@@ -12,6 +12,7 @@ class Post(models.Model):
     date_published = models.DateTimeField(default=timezone.now)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
+    is_public = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -28,3 +29,31 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"user: {self.user} | post: {self.post} | comment:{self.comment}"
+
+
+class Like(models.Model):
+    ''' like  Post '''
+
+    post = models.OneToOneField(
+        Post, related_name="likes", on_delete=models.CASCADE)
+    users = models.ManyToManyField(
+        User, related_name='requirement_comment_likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.comment.comment)[:30]
+
+
+class DisLike(models.Model):
+    ''' Dislike  Post '''
+
+    post = models.OneToOneField(
+        Post, related_name="dislikes", on_delete=models.CASCADE)
+    users = models.ManyToManyField(
+        User, related_name='requirement_comment_dislikes')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.comment.comment)[:30]
