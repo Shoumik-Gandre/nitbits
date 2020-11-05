@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import './SignUp.css';
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -43,21 +44,30 @@ function SignUp({ handleSignupOff }) {
     const [user, setUser] = useState({
         username: "",
         email: "",
-        contact: "",
-        password: "",
-        confirm_password: "",
+        password1: "",
+        password2: "",
     })
 
     const handleChange = (name) => (event) => {
         setUser({ ...user, [name]: event.target.value });
     };
 
-    const handleSignUp = () => {
-        // signup api
-    }
+    const handleSignUp = async () => {
+      console.log(user);
+      try {
+        const response = await axios.post(
+          `http://127.0.0.1:8000/rest-auth/registration/`,
+           user
+        );
+        console.log("signup : ", response);
+        handleSignupOff();
+      } catch (error) {
+        console.log("signup : ", error);
+      }
+    };
 
     return (
-        <Card className={classes.card}>
+    <Card className={classes.card}>
     <CardContent>
       <Typography variant="h6" className={classes.title}>
         Sign Up
@@ -89,25 +99,12 @@ function SignUp({ handleSignupOff }) {
       />
       <br />
       <TextField
-        id="contact"
-        type="text"
-        label="Contact"
-        color="orange"
-        className={classes.textField}
-        value={user.contact}
-        onChange={handleChange("contact")}
-        margin="normal"
-        autoComplete="off"
-        spellCheck="false"
-      />
-      <br />
-      <TextField
         id="password"
         type="password"
         label="Password"
         className={classes.textField}
-        value={user.password}
-        onChange={handleChange("password")}
+        value={user.password1}
+        onChange={handleChange("password1")}
         margin="normal"
         autoComplete="off"
         spellCheck="false"
@@ -118,8 +115,8 @@ function SignUp({ handleSignupOff }) {
         type="password"
         label="Confirm Password"
         className={classes.textField}
-        value={user.confirm_password}
-        onChange={handleChange("confirm_password")}
+        value={user.password2}
+        onChange={handleChange("password2")}
         margin="normal"
         autoComplete="off"
         spellCheck="false"

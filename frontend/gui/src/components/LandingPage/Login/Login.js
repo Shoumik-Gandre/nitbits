@@ -52,7 +52,19 @@ function Login({ handleSignupOn, handleLogIn }) {
 
     const handleLogin = () => {
       // login api
-        handleLogIn();
+      axios.post('http://127.0.0.1:8000/rest-auth/login/', 
+      { 
+        ...user, 
+        email:"" 
+      })
+      .then((res)=>{
+        alert(JSON.stringify(res));
+        if(res.data.key) {
+          localStorage.setItem('token', res.data.key);
+          handleLogIn();
+        }
+      });
+      handleLogIn();
     }
 
     return (
@@ -101,4 +113,4 @@ function Login({ handleSignupOn, handleLogIn }) {
     )
 }
 
-export default Login
+export default Login;

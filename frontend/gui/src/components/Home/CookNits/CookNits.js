@@ -1,10 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Grid from '@material-ui/core/Grid'
 import ImageUpload from './ImageUpload/ImageUpload';
 import PostImage from './PostImage/PostImage';
 import {makeStyles} from '@material-ui/core/styles'
 import avatarImg from '../../../static/images/img_01.jpeg';
 import './CookNits.css'
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
     photo: {
@@ -21,6 +22,51 @@ function CookNits() {
 
     const classes = useStyles();
 
+    const [contentImage, setContentImage] = useState(null);
+    const [styleImage, setStyleImage] = useState(null);
+    const [nstImage, setNstImage] = useState(null);
+
+    const handleContentImage = (img) => {
+        setContentImage(img);
+        console.log("c : ", img);
+    }
+
+    const handleStyledImage = (img) => {
+        setStyleImage(img);
+        console.log("s : ", img);
+    }
+
+    const handleNST = async () => {
+        // console.log('handleNST:', localStorage.getItem('token'))
+        
+        try {
+            // axios.defaults.headers = {
+            //     "Content-Type": "appllication/json",
+            //     Authorization: localStorage.getItem('token')
+            // }
+            let uploadData = new FormData();
+            uploadData.append('title', '')
+            uploadData.append('description', '')
+            uploadData.append('content_image', contentImage, contentImage.name)
+            uploadData.append('style_image', styleImage, styleImage.name)
+
+            const response = await axios.post(
+                `http://127.0.0.1:8000/posts/create/`,
+                uploadData,
+                {
+                  headers: {
+                    "content-type": "multipart/form-data",
+                  },
+                }
+            );
+
+            setNstImage(`http://127.0.0.1:8000${response.data.imagelink}`);
+            console.log("handleNST : ", response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const handleDownload = () => {
         // download neural styled transfer image
     }
@@ -31,11 +77,12 @@ function CookNits() {
             <Grid container spacing={8}>
                 <Grid item xs={7} sm={6}>
                     <h2>Content Image : </h2>
-                    <ImageUpload />
+                    <ImageUpload type = 'c' handleContentImage = {handleContentImage} handleStyledImage={handleStyledImage} />
                 </Grid>
                 <Grid item xs={7} sm={6}>
                     <h2>Styled Image : </h2>
-                    <ImageUpload />
+                    <ImageUpload type = 's' handleContentImage = {handleContentImage} handleStyledImage={handleStyledImage} />
+                    <button onClick={handleNST}> Get NST </button>
                 </Grid>
             </Grid>
             <Grid container spacing={8}>
@@ -45,7 +92,8 @@ function CookNits() {
                         <img
                         className={classes.media}
                         // src={'/api/posts/photo/'+post.image}
-                        src={avatarImg}
+                        // src={avatarImg}
+                        src={nstImage}
                         />
                         {/* <button onClick={handleDownload}>Download</button> */}
                     </div>
@@ -58,4 +106,4 @@ function CookNits() {
     )
 }
 
-export default CookNits
+export default CookNits;

@@ -6,7 +6,8 @@ import './PostList.css'
 function PostList ({ posts }) {
     return (
       <div style={{marginTop: '24px'}}>
-        {posts.map((post, i) => {
+        {
+          posts.map((post, i) => {
             return <Post post={post} key={i} />
           })
         }

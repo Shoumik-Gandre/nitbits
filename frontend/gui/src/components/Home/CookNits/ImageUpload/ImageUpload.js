@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-function ImageUpload() {
+function ImageUpload({ type, handleContentImage, handleStyledImage }) {
 
   const classes = useStyles();
 
@@ -26,6 +26,8 @@ function ImageUpload() {
     e.preventDefault();
     // TODO: do something with -> this.state.file
     console.log("handle uploading-", file);
+    if(type == 'c') handleContentImage(file);
+    else if(type == 's') handleStyledImage(file);
   };
 
   const handleImageChange = (e) => {
@@ -39,6 +41,10 @@ function ImageUpload() {
     };
 
     reader.readAsDataURL(file);
+
+    // if(type == 'c') handleContentImage(file);
+    // else if(type == 's') handleStyledImage(file);
+    console.log(file);
   };
 
   let $imagePreview = null;
@@ -68,6 +74,7 @@ function ImageUpload() {
     <div className="previewComponent">
       <form onSubmit={handleSubmit}>
         <input className="fileInput" type="file" onChange={handleImageChange} />
+        <button type="submit">Submit</button>
         {/* <button className="submitButton" type="submit" onClick={handleSubmit}>
           Upload Image
         </button> */}

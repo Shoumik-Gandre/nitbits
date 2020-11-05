@@ -145,13 +145,13 @@ function Post ({ post }){
                 // <Avatar src={'/api/users/photo/'+post.owner}/>
                 <Avatar src={ avatarImg }/>
               }
-              action={post.owner === user.username &&
+              action={post.user === user.username &&
                 <IconButton onClick={deletePost}>
                   <DeleteIcon className={classes.deleteBtn} />
                 </IconButton>
               }
-              title={<Link to={"/user/" + post.owner}>{post.owner}</Link>}
-              subheader={(new Date(post.timestamp)).toDateString()}
+              title={<Link to={"/user/" + post.user}>{post.user}</Link>}
+              subheader={(new Date(post.date_published)).toDateString()}
               className={classes.cardHeader}
             />
           <CardContent className={classes.cardContent}>
@@ -163,7 +163,7 @@ function Post ({ post }){
                 <img
                   className={classes.media}
                   // src={'/api/posts/photo/'+post.image}
-                  src={postImg}
+                  src={post.image}
                   />
               </div>)}
           </CardContent>
@@ -177,7 +177,7 @@ function Post ({ post }){
                 </IconButton> } <span>{post.num_upvotes}</span> */}
                 <IconButton className={classes.commentIcon} aria-label="Comment" color="secondary">
                   <CommentIcon/>
-                </IconButton> <span>{post.num_comments}</span>
+                </IconButton> <span>{post.num_comments?1:0}</span>
           </CardActions>
             </Grid>
             <Grid className="comments-wrap" item xs={6} sm={5}>

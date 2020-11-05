@@ -36,3 +36,6 @@ send post request like {'user': <user-pk>} , the user with that user-pk will be 
 
 profiles/unfollow/
 send post request like {'user': <user-pk>} , the user with that user-pk will be unfollowed
+
+posts/userprofile/
+returns a list of posts made by user for userprofile page

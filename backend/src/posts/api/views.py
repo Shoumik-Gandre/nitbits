@@ -46,6 +46,7 @@ except Exception as e:
     print('nst exception')
     nst_exception = True
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 
 
 class PostListView(ListAPIView):
@@ -114,18 +115,21 @@ class ImageUploadParser(FileUploadParser):
 
 
 class PostCreateView(APIView):
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    #permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
     parser_class = (ImageUploadParser,)
     serializer_class = PostSerializerCreate
 
     def post(self, request, format=None):
+
         if ('content_image' not in request.data) or ('style_image' not in request.data):
             raise ParseError("Empty content")
         _title = request.data['title']
-        _user = request.user
+        _user = User.objects.get(pk=1)  # request.user
         _description = request.data['description']
         _content_image = request.data['content_image']
         _style_image = request.data['style_image']
+        print(_content_image)
+        print(_style_image)
         # final_image = None  # final image will contain the NST image generated
         try:
             content_image = Image.open(_content_image).verify()

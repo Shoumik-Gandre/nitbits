@@ -8,6 +8,7 @@ import postImg from '../../../static/images/img_00.jpeg'
 import {one_post_data} from './onePostData/one_post_data';
 import PostList from '../../PostList/PostList';
 import './Profile.css'
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
     largeAvatar: {
@@ -36,6 +37,12 @@ const useStyles = makeStyles(theme => ({
         height: 200
     },
 }))
+
+const getProfilePosts = () => {
+    axios.get('http://127.0.0.1:8000/posts/userprofile/')
+    .then((response)=>{ console.log(response);})
+    .catch((error) => {console.log(error);})
+}
 
 function Profile({ match }) {
 
