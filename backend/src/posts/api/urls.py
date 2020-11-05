@@ -24,7 +24,7 @@ urlpatterns = [
     path('<int:pk>/', PostDetailView.as_view()),
     path('create/', PostCreateView.as_view()),
     path('user/<user>/', PostByUserView.as_view()),
-    path('userprofile/<user>/', PostForProfileView.as_view()),
+    path('userprofile/', PostForProfileView.as_view()),
     path('sortby/top/', PostListViewTop.as_view()),
     path('sortby/hot/', PostListViewHot.as_view()),
     path('sortby/new/', PostListViewNew.as_view()),

@@ -1,19 +1,62 @@
 from rest_framework import serializers
 from ..models import Post, Comment
+from django.contrib.auth.models import User
+from profiles.models import UserProfile
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    follows = ""
+
+    class Meta:
+        model = UserProfile
+        fields = ("image",)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(source="userprofile", read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('pk', 'username', 'profile')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(source='user', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('pk', 'owner', 'post', 'comment', 'timestamp')
+
+
+class CommentSerializerUpdate(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('comment',)
 
 
 class PostSerializer(serializers.ModelSerializer):
+
+    comments = CommentSerializer(
+        source="comment_set", read_only=True, many=True)
+
+    owner = UserSerializer(source="user", read_only=True)
+
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'user', 'image', 'description',
-                  'date_published', 'upvotes', 'downvotes')
+        fields = ('pk', 'title', 'owner', 'image', 'description',
+                  'timestamp', 'upvotes', 'downvotes', 'comments')
 
 
 class ProfilePostSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(
+        source="comment_set", read_only=True, many=True)
+
+    owner = UserSerializer(source="user", read_only=True)
+
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'user', 'image', 'description',
-                  'date_published', 'upvotes', 'downvotes', 'is_public')
+        fields = ('pk', 'title', 'owner', 'image', 'description',
+                  'timestamp', 'upvotes', 'downvotes', 'is_public', 'comments')
 
 
 class PostSerializerHiddenUser(serializers.ModelSerializer):
@@ -25,7 +68,7 @@ class PostSerializerHiddenUser(serializers.ModelSerializer):
 class ReturnCreatedURL(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('image')
+        fields = ('image',)
 
 
 class PostSerializerCreate(serializers.ModelSerializer):
@@ -35,15 +78,3 @@ class PostSerializerCreate(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('title', 'description', 'content_image', 'style_image')
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('pk', 'user', 'post', 'comment')
-
-
-class CommentSerializerUpdate(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('comment',)

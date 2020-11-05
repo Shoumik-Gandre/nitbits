@@ -60,11 +60,11 @@ class PostListViewHot(ListAPIView):
 
     def get_queryset(self):
         yesterday = timezone.now() - datetime.timedelta(days=1)
-        return (Post.objects.filter(date_published__gte=yesterday).order_by(F('downvotes') - F('upvotes')).filter(is_public=True))
+        return (Post.objects.filter(timestamp__gte=yesterday).order_by(F('downvotes') - F('upvotes')).filter(is_public=True))
 
 
 class PostListViewNew(ListAPIView):
-    queryset = Post.objects.filter(is_public=True).order_by('-date_published')
+    queryset = Post.objects.filter(is_public=True).order_by('-timestamp')
     serializer_class = PostSerializer
 
 
@@ -98,8 +98,7 @@ class PostForProfileView(ListAPIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
-        _user = self.kwargs['user']
-        return Post.objects.filter(user=_user)
+        return Post.objects.filter(user=self.request.user)
 
 
 class PostDetailView(RetrieveAPIView):

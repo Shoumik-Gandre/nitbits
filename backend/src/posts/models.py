@@ -9,7 +9,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images')
     description = models.TextField(max_length=512, default="")
-    date_published = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
     is_public = models.BooleanField(default=False)
@@ -25,7 +25,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment = models.TextField(max_length=512)
-    date_published = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"user: {self.user} | post: {self.post} | comment:{self.comment}"
@@ -38,8 +38,7 @@ class Like(models.Model):
         Post, related_name="likes", on_delete=models.CASCADE)
     users = models.ManyToManyField(
         User, related_name='requirement_comment_likes')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.comment.comment)[:30]
@@ -52,8 +51,7 @@ class DisLike(models.Model):
         Post, related_name="dislikes", on_delete=models.CASCADE)
     users = models.ManyToManyField(
         User, related_name='requirement_comment_dislikes')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.comment.comment)[:30]
