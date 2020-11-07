@@ -1,0 +1,16 @@
+python manage.py dbshell
+
+# my_app is the name of the app
+
+# Remove Django migrations.
+DELETE FROM `django_migrations` WHERE `app` = 'my_app';
+# Get rid of permissions and content types.
+DELETE FROM `auth_permission` WHERE `content_type_id` in (SELECT `id` FROM `django_content_type` WHERE `app_label` = 'my_app');
+# Get rid of admin changes.
+DELETE FROM `django_admin_log` WHERE `content_type_id` in (SELECT `id` FROM `django_content_type` WHERE `app_label` = 'my_app');
+# Finally, delete the content type.
+DELETE FROM `django_content_type` WHERE `app_label` = 'my_app';
+
+.tables
+DROP TABLE `my_app_some_model`;
+DROP TABLE `my_app_other_model`;

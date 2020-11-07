@@ -30,8 +30,9 @@ import './SurfBits.css'
 // }));
 
 function SurfBits() {
-    const [posts, setPosts] = useState([]);
+
     //const classes = useStyles();
+    const [posts, setPosts] = useState([]);
     const [sortBy, setSortBy] = useState('none');
     const [searchText, setSearchText] = useState("");
 
@@ -42,11 +43,8 @@ function SurfBits() {
             try {
                 const response = await axios.get(
                     `http://127.0.0.1:8000/posts/`,
-                    {
-                        cancelToken: source.token,
-                    }
+                    { cancelToken: source.token, }
                 );
-                console.log(response.data);
                 setPosts(response.data);
             } catch (err) {
                 if (axios.isCancel(err)) {
@@ -66,10 +64,25 @@ function SurfBits() {
 
     const handleChange = (event) => {
         setSortBy(event.target.value);
+        axios({
+            method: 'GET',
+            url: `http://127.0.0.1:8000/posts/sortby/${sortBy}`
+        }).then(res => {
+            setPosts(res.data);
+        });
     };
 
     const handleSearchText = (event) => {
         setSearchText(event.target.value);
+    }
+
+    const handleSearchQuery = (event) => {
+        (searchText !== "") && axios({
+            method: 'GET',
+            url: `http://127.0.0.1:8000/posts/search/${searchText}/`
+        }).then(res => {
+            setPosts(res.data);
+        });
     }
 
     return (
@@ -105,11 +118,11 @@ function SurfBits() {
                         <option value="top">Top</option>
                         <option value="hot">Hot</option>
                         <option value="new">New</option>
-                        <option value="rising">Rising</option>
                     </select>
                 </Grid>
                 <Grid item xs={10} sm={9}>
                     <input type="text" className="search-text-input" value={searchText} onChange={handleSearchText} placeholder="Search Bits .... " />
+                    <input type="button" onClick={handleSearchQuery} value="Go"/>
                     {/* <h2> Search Bits... </h2> */}
                 </Grid>
             </Grid>

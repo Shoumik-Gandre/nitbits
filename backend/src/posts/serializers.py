@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Post, Comment
+from .models import Post, Comment
 from django.contrib.auth.models import User
 from profiles.models import UserProfile
 
@@ -78,3 +78,9 @@ class PostSerializerCreate(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('description', 'content_image', 'style_image')
+
+
+class PostUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('description', 'is_public')

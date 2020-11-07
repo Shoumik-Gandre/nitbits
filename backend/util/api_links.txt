@@ -39,3 +39,6 @@ send post request like {'user': <user-pk>} , the user with that user-pk will be 
 
 posts/userprofile/
 returns a list of posts made by user for userprofile page
+
+posts/search/<str:search>/
+returns a list of uploaded posts that match

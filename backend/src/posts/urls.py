@@ -10,12 +10,15 @@ from .views import (
     PostListViewTop,
     PostListViewHot,
     PostListViewNew,
+    PostByUserView,
     CommentListView,
     CommentOnPostListView,
     CommentUpdateView,
     CommentDeleteView,
+    PostUploadView,
     PostUpvote,
     PostDownvote,
+    PostSearchView,
 )
 
 urlpatterns = [
@@ -30,8 +33,9 @@ urlpatterns = [
     path('sortby/new/', PostListViewNew.as_view()),
     path('<int:pk>/update/', PostUpdateView.as_view()),
     path('<int:pk>/delete/', PostDeleteView.as_view()),
-    path('<int:pk>/upvote', PostUpvote.as_view()),
-    path('<int:pk>/downvote', PostDownvote.as_view()),
+    path('<int:pk>/upvote/', PostUpvote.as_view()),
+    path('<int:pk>/downvote/', PostDownvote.as_view()),
+    path('<int:pk>/upload/', PostUploadView.as_view()),
 
     # Comment handling
     path('comments/', CommentListView.as_view()),  # all comments
@@ -41,4 +45,6 @@ urlpatterns = [
     path('comments/<int:pk>/update/', CommentUpdateView.as_view()),
     # delete comment
     path('comments/<int:pk>/delete/', CommentDeleteView.as_view()),
+    # Search bar
+    path('search/<str:search>/',PostSearchView.as_view()),
 ]

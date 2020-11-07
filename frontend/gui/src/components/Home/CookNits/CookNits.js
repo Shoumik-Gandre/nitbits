@@ -25,6 +25,7 @@ function CookNits() {
     const [contentImage, setContentImage] = useState(null);
     const [styleImage, setStyleImage] = useState(null);
     const [nstImage, setNstImage] = useState(null);
+    const [postId, setPostId] = useState(null);
 
     const handleContentImage = (img) => {
         setContentImage(img);
@@ -40,10 +41,6 @@ function CookNits() {
         // console.log('handleNST:', localStorage.getItem('token'))
 
         try {
-            // axios.defaults.headers = {
-            //     "Content-Type": "appllication/json",
-            //     Authorization: localStorage.getItem('token')
-            // }
             let uploadData = new FormData();
             uploadData.append('title', '')
             uploadData.append('description', '')
@@ -63,6 +60,7 @@ function CookNits() {
             );
 
             setNstImage(`http://127.0.0.1:8000${response.data.imagelink}`);
+            setPostId(response.data.pk)
             console.log("handleNST : ", response);
         } catch (error) {
             console.log(error);
@@ -98,7 +96,7 @@ function CookNits() {
                     </div>
                 </Grid>
                 <Grid item xs={6} sm={5}>
-                    <PostImage />
+                    <PostImage pk={postId}/>
                 </Grid>
             </Grid>
         </div>

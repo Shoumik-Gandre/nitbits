@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import './PostImage.css';
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function PostImage() {
+function PostImage({ pk }) {
 
     const classes = useStyles();
 
@@ -45,7 +46,19 @@ function PostImage() {
     };
 
     const handlePostUpload = () => {
-        // post upload api
+        axios({
+            method: 'put',
+            url: `http://127.0.0.1:8000/posts/${pk}/upload/`,
+            headers: {
+                Authorization: `Token ${localStorage.getItem('token')}`
+            },
+            data: {
+                'description': postDescription,
+                'is_public': true
+            }
+        }).then(response=>{
+            console.log(response)
+        });
     }
 
     return (

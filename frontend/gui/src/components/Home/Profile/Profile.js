@@ -51,7 +51,6 @@ function Profile({ match }) {
 
         const loadData = async () => {
             try {
-                console.log(`Token ${localStorage.getItem('token')}`);
                 const response = await axios({
                     method: 'get',
                     url: `http://127.0.0.1:8000/posts/userprofile/`,
@@ -60,15 +59,10 @@ function Profile({ match }) {
                         "Authorization": `Token ${localStorage.getItem('token')}`
                     }
                 });
-
-                console.log(response.data);
                 setPosts(response.data);
             } catch (err) {
-                if (axios.isCancel(err)) {
-                    console.log("dashboard caught cancel");
-                } else {
-                    throw err;
-                }
+                if (axios.isCancel(err)) {console.log("dashboard caught cancel");} 
+                else {throw err;}
             }
         }
 
@@ -81,6 +75,7 @@ function Profile({ match }) {
 
     const handleMyPostDescription = () => {
         // redirect to /post
+        
         setNormal(!normal);
     }
 
