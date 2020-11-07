@@ -12,7 +12,8 @@ function Home({ handleLogOut }) {
     return (
         <Container>
             <div>
-                <div className="header-title">Nitbits <h3 onClick={handleLogOut} className="logout-title">Logout</h3> </div>
+                <h1 className="header-title">Nitbits </h1>
+                <h3 onClick={handleLogOut} className="logout-title">Logout</h3>
             </div>
             <Navbar />
             <Route exact path="/dashboard" component={Dashboard} />
