@@ -49,13 +49,17 @@ function CookNits() {
             uploadData.append('description', '')
             uploadData.append('content_image', contentImage, contentImage.name)
             uploadData.append('style_image', styleImage, styleImage.name)
-
+            //alert(localStorage.getItem('token'))
+            console.log(`Token ${localStorage.getItem('token')}`)
             const response = await axios.post(
                 `http://127.0.0.1:8000/posts/create/`,
-                uploadData,
+                uploadData
+                ,
                 {
                   headers: {
+                    ...axios.defaults.headers,
                     "content-type": "multipart/form-data",
+                    "Authorization": `Token ${localStorage.getItem('token')}`,
                   },
                 }
             );

@@ -43,7 +43,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'owner', 'image', 'description',
+        fields = ('pk', 'owner', 'image', 'description',
                   'timestamp', 'upvotes', 'downvotes', 'comments')
 
 
@@ -55,14 +55,14 @@ class ProfilePostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'owner', 'image', 'description',
+        fields = ('pk', 'owner', 'image', 'description',
                   'timestamp', 'upvotes', 'downvotes', 'is_public', 'comments')
 
 
 class PostSerializerHiddenUser(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'description')
+        fields = ('pk', 'description')
 
 
 class ReturnCreatedURL(serializers.ModelSerializer):
@@ -77,4 +77,4 @@ class PostSerializerCreate(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('title', 'description', 'content_image', 'style_image')
+        fields = ('description', 'content_image', 'style_image')

@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='userprofile')
-    image = models.ImageField(upload_to='userProfile')
+    image = models.ImageField(upload_to='userProfile',
+                              default='userProfile/default.png')
     follows = models.ManyToManyField(
         User, related_name='follows', symmetrical=False)
 

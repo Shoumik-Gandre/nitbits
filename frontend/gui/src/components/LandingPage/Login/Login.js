@@ -58,13 +58,12 @@ function Login({ handleSignupOn, handleLogIn }) {
         email:"" 
       })
       .then((res)=>{
-        alert(JSON.stringify(res));
+        // alert(JSON.stringify(res));
         if(res.data.key) {
           localStorage.setItem('token', res.data.key);
           handleLogIn();
         }
       });
-      handleLogIn();
     }
 
     return (

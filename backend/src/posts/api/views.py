@@ -18,6 +18,10 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
 from rest_framework.exceptions import ParseError
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+
+
 from ..models import (
     Post,
     Comment,
@@ -115,16 +119,18 @@ class ImageUploadParser(FileUploadParser):
 
 
 class PostCreateView(APIView):
-    #permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication, )
     parser_class = (ImageUploadParser,)
     serializer_class = PostSerializerCreate
 
     def post(self, request, format=None):
-
+        print(request)
         if ('content_image' not in request.data) or ('style_image' not in request.data):
             raise ParseError("Empty content")
         _title = request.data['title']
-        _user = User.objects.get(pk=1)  # request.user
+        _user = Token.objects.get(
+            key=(request.headers['Authorization'].split('Token ')[1])).user
         _description = request.data['description']
         _content_image = request.data['content_image']
         _style_image = request.data['style_image']
@@ -143,7 +149,6 @@ class PostCreateView(APIView):
                 final_image = _content_image
 
             p = Post(
-                title=_title,
                 user=_user,
                 image=final_image,  # replace with final image
                 description=_description
