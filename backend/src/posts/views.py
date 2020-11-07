@@ -150,28 +150,20 @@ class PostCreateView(APIView):
     serializer_class = PostSerializerCreate
 
     def post(self, request, format=None):
-        print(request)
-        if ('content_image' not in request.data) or ('style_image' not in request.data):
-            raise ParseError("Empty content")
-        _title = request.data['title']
-        _user = Token.objects.get(
-            key=(request.headers['Authorization'].split('Token ')[1])).user
-        _description = request.data['description']
-        _content_image = request.data['content_image']
-        _style_image = request.data['style_image']
-        print(_content_image)
-        print(_style_image)
-        # final_image = None  # final image will contain the NST image generated
         try:
+            if ('content_image' not in request.data) or ('style_image' not in request.data): raise ParseError("Empty content")
+            _title = request.data['title']
+            _user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
+            _description = request.data['description']
+            _content_image = request.data['content_image']
+            _style_image = request.data['style_image']
             content_image = Image.open(_content_image).verify()
             style_image = Image.open(_style_image).verify()
 
             content_image = Image.open(_content_image)
             style_image = Image.open(_style_image)
-            if not nst_exception:
-                final_image = NST.run(content_image, style_image)
-            else:
-                final_image = _content_image
+            if not nst_exception: final_image = NST.run(content_image, style_image)
+            else: final_image = _content_image
 
             p = Post(
                 user=_user,
@@ -184,8 +176,6 @@ class PostCreateView(APIView):
         except ParseError:
             raise ParseError("Unsupported image type")
         except Exception as e:
-            print(e)
-            traceback.print_exc()
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -282,19 +272,35 @@ class CommentDeleteView(DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
 
 
-class PostUpvote(APIView):
+class PostVote(APIView):
     permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, )
 
     def post(self, request):
-        post = self.kwargs['post']
-        user = self.kwargs['user']
-        Like.objects.get(post=post, user=request.user)
+        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
+        vote = self.kwargs['vote']
+        post_pk = self.kwargs['post_id']
 
+        self.votingRoutine(user, post_pk, vote)
 
-class PostDownvote(APIView):
-    permission_classes = (permissions.IsAuthenticated, )
-
-    def post(self, request):
-        post = self.kwargs['post']
-        user = self.kwargs['user']
-        DisLike.objects.get(post=post, user=request.user)
+    def votingRoutine(self, user: User, post_pk: int, vote: int) -> Response:
+        try:
+            post = Post.objects.get(pk=post_pk)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # check upvotes and downvotes for user
+        if vote > 0:
+            try: post.downvotes.remove(user)
+            except Exception as e: return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            post.upvotes.add(user)
+        elif vote < 0:
+            try: post.upvotes.remove(user)
+            except Exception as e: return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            post.downvotes.add(user)
+        else:
+            try: post.downvotes.remove(user)
+            except Exception as e: return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            try: post.upvotes.remove(user)
+            except Exception as e: return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        post.save()
+        return Response(status=status.HTTP_200_OK)

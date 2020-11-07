@@ -9,8 +9,8 @@ class Post(models.Model):
     image       = models.ImageField(upload_to='images')
     description = models.TextField(max_length=512, default="")
     timestamp   = models.DateTimeField(default=timezone.now)
-    upvotes     = models.IntegerField(default=0)
-    downvotes   = models.IntegerField(default=0)
+    upvotes     = models.ManyToManyField(User, related_name='upvotes', blank=True)
+    downvotes   = models.ManyToManyField(User, related_name='downvotes', blank=True)
     is_public   = models.BooleanField(default=False)
 
     def __str__(self):
@@ -18,6 +18,9 @@ class Post(models.Model):
 
     def get_absolute_image_url(self):
         return "{0}{1}".format(settings.MEDIA_ROOT, self.image.url)
+
+    def get_votes(self):
+        return (self.upvotes.count() - self.downvotes.count())
 
 
 class Comment(models.Model):

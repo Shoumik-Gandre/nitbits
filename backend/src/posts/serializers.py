@@ -44,7 +44,11 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('pk', 'owner', 'image', 'description',
-                  'timestamp', 'upvotes', 'downvotes', 'comments')
+                  'timestamp', 'get_votes', 'comments')
+
+    def to_internal_value(self, data):
+        print(data.upvotes)
+        return True
 
 
 class ProfilePostSerializer(serializers.ModelSerializer):
