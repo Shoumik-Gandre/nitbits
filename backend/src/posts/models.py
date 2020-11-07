@@ -14,7 +14,7 @@ class Post(models.Model):
     is_public = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return self.description
 
     def get_absolute_image_url(self):
         return "{0}{1}".format(settings.MEDIA_ROOT, self.image.url)

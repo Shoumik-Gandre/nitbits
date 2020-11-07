@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import {makeStyles} from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import defaultImagePreview from '../../../../static/images/image_select_01.jpg';
 import './ImageUpload.css';
 
 const useStyles = makeStyles(theme => ({
-    photo: {
-      textAlign: 'center',
-      backgroundColor: 'rgb(28 37 35)',
-      padding:theme.spacing(1)
-    },
-    media: {
-      marginTop: "30px",
-      height: 200
-    },
+  photo: {
+    textAlign: 'center',
+    backgroundColor: 'rgb(28 37 35)',
+    padding: theme.spacing(1)
+  },
+  media: {
+    marginTop: "30px",
+    height: 200
+  },
 }))
 
 function ImageUpload({ type, handleContentImage, handleStyledImage }) {
@@ -26,8 +26,8 @@ function ImageUpload({ type, handleContentImage, handleStyledImage }) {
     e.preventDefault();
     // TODO: do something with -> this.state.file
     console.log("handle uploading-", file);
-    if(type == 'c') handleContentImage(file);
-    else if(type == 's') handleStyledImage(file);
+    if (type === 'c') handleContentImage(file);
+    else if (type === 's') handleStyledImage(file);
   };
 
   const handleImageChange = (e) => {
@@ -42,8 +42,8 @@ function ImageUpload({ type, handleContentImage, handleStyledImage }) {
 
     reader.readAsDataURL(file);
 
-    // if(type == 'c') handleContentImage(file);
-    // else if(type == 's') handleStyledImage(file);
+    // if(type === 'c') handleContentImage(file);
+    // else if(type === 's') handleStyledImage(file);
     console.log(file);
   };
 
@@ -51,22 +51,23 @@ function ImageUpload({ type, handleContentImage, handleStyledImage }) {
   if (imagePreviewUrl) {
     // $imagePreview = <img src={imagePreviewUrl} alt="img" />;
 
-    $imagePreview = ( <div className={classes.photo}>
-                <img
-                  className={classes.media}
-                  // src={'/api/posts/photo/'+post.image}
-                  src={imagePreviewUrl}
-                  />
-              </div> );
+    $imagePreview = (<div className={classes.photo}>
+      <img
+        className={classes.media}
+        src={imagePreviewUrl}
+        alt="alt"
+      />
+    </div>);
   } else {
     $imagePreview = (
-            <div className={classes.photo}>
-                <img
-                  className={classes.media}
-                  src={defaultImagePreview}
-                  />
-                  <h3>Please select an Image for Preview</h3>
-            </div> 
+      <div className={classes.photo}>
+        <img
+          className={classes.media}
+          src={defaultImagePreview}
+          alt="alt"
+        />
+        <h3>Please select an Image for Preview</h3>
+      </div>
     );
   }
 

@@ -1,55 +1,68 @@
-import React, { useState } from 'react'
-import { all_posts } from './surfbitData/surfbit_data';
+import React, { useState, useEffect } from 'react'
+//import { all_posts } from './surfbitData/surfbit_data';
 import PostList from '../../PostList/PostList';
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
 import './SurfBits.css'
 
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    },
-    select: {
-        '&:before': {
-             borderColor: 'var(--galaxy-blue)',
-         },
-         '&:hover:not(.Mui-disabled):before': {
-             borderColor: 'var(--galaxy-blue)',
-         }
-    },
-    // select: {
-    //     "&:before": {
-    //       borderColor: "red"
-    //     }
-    // },
-    // select: {
-    //     color: "white !important",
-    //     '&:before': {
-    //         borderColor: "green !important",
-    //         color: "white !important",
-    //     },
-    //     '&:after': {
-    //         borderColor: "green",
-    //     }
-    // },
-    icon: {
-        fill: "green",
-    },
-}));
+// const useStyles = makeStyles((theme) => ({
+//     formControl: {
+//         margin: theme.spacing(1),
+//         minWidth: 120,
+//     },
+//     select: {
+//         '&:before': {
+//              borderColor: 'var(--galaxy-blue)',
+//          },
+//          '&:hover:not(.Mui-disabled):before': {
+//              borderColor: 'var(--galaxy-blue)',
+//          }
+//     },
+//     icon: {
+//         fill: "green",
+//     },
+// }));
 
 function SurfBits() {
-
-    const classes = useStyles();
-
+    const [posts, setPosts] = useState([]);
+    //const classes = useStyles();
     const [sortBy, setSortBy] = useState('none');
-
     const [searchText, setSearchText] = useState("");
+
+    useEffect(() => {
+        let source = axios.CancelToken.source();
+
+        const loadData = async () => {
+            try {
+                const response = await axios.get(
+                    `http://127.0.0.1:8000/posts/`,
+                    {
+                        cancelToken: source.token,
+                    }
+                );
+                console.log(response.data);
+                setPosts(response.data);
+            } catch (err) {
+                if (axios.isCancel(err)) {
+                    console.log("dashboard caught cancel");
+                } else {
+                    throw err;
+                }
+            }
+        }
+
+        loadData();
+
+        return () => {
+            source.cancel();
+        };
+    }, []);
 
     const handleChange = (event) => {
         setSortBy(event.target.value);
@@ -101,7 +114,7 @@ function SurfBits() {
                 </Grid>
             </Grid>
             <Divider />
-            <PostList posts={all_posts} />
+            <PostList posts={posts} />
         </div>
     )
 }

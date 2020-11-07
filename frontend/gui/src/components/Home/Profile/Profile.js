@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import Grid from '@material-ui/core/Grid'
-import {makeStyles} from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
 import avatarImg from '../../../static/images/img_01.jpeg';
-import postImg from '../../../static/images/img_00.jpeg'
-import {one_post_data} from './onePostData/one_post_data';
+//import postImg from '../../../static/images/img_00.jpeg'
+import { one_post_data } from './onePostData/one_post_data';
 import PostList from '../../PostList/PostList';
 import './Profile.css'
 import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
     largeAvatar: {
-      width: 150,
-      height: 150,
-      margin: "auto",
+        width: 150,
+        height: 150,
+        margin: "auto",
     },
     profileHeaderWrap: {
         marginBottom: "40px",
@@ -31,24 +31,53 @@ const useStyles = makeStyles(theme => ({
     photo: {
         textAlign: 'center',
         backgroundColor: 'rgb(28 37 35)',
-        padding:theme.spacing(1)
+        padding: theme.spacing(1)
     },
     media: {
         height: 200
     },
 }))
 
-const getProfilePosts = () => {
-    axios.get('http://127.0.0.1:8000/posts/userprofile/')
-    .then((response)=>{ console.log(response);})
-    .catch((error) => {console.log(error);})
-}
-
 function Profile({ match }) {
 
     const classes = useStyles();
 
     const [normal, setNormal] = useState(true);
+
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        let source = axios.CancelToken.source();
+
+        const loadData = async () => {
+            try {
+                console.log(`Token ${localStorage.getItem('token')}`);
+                const response = await axios({
+                    method: 'get',
+                    url: `http://127.0.0.1:8000/posts/userprofile/`,
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": `Token ${localStorage.getItem('token')}`
+                    }
+                });
+
+                console.log(response.data);
+                setPosts(response.data);
+            } catch (err) {
+                if (axios.isCancel(err)) {
+                    console.log("dashboard caught cancel");
+                } else {
+                    throw err;
+                }
+            }
+        }
+
+        loadData();
+
+        return () => {
+            source.cancel();
+        };
+    }, []);
 
     const handleMyPostDescription = () => {
         // redirect to /post
@@ -57,11 +86,26 @@ function Profile({ match }) {
 
     let currComp;
 
-    if(normal){
+    if (normal) {
         currComp = (
             <div className={classes.postSetWrap}>
                 <Grid container spacing={6}>
-                    <Grid item xs={5} sm={4}>
+                    {
+                        posts.map((post, id) => {
+                            return (
+                                <Grid item xs={5} sm={4}>
+                                    <div className={classes.photo} onClick={handleMyPostDescription} >
+                                        <img
+                                            className={classes.media}
+                                            src={post.image}
+                                            alt='alt'
+                                        />
+                                    </div>
+                                </Grid>
+                            )
+                        })
+                    }
+                    {/* <Grid item xs={5} sm={4}>
                         <div className={classes.photo} onClick={handleMyPostDescription} >
                             <img
                             className={classes.media}
@@ -92,15 +136,16 @@ function Profile({ match }) {
                             src={avatarImg}
                             />
                         </div>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </div>
-        )} 
+        )
+    }
     else {
         currComp = (
             <div>
                 <div className="back-btn">
-                    <p  onClick={handleMyPostDescription}>Back</p>
+                    <p onClick={handleMyPostDescription}>Back</p>
                 </div>
                 <div className="post-description-wrapper">
                     <PostList posts={one_post_data} />
@@ -111,7 +156,7 @@ function Profile({ match }) {
 
     useEffect(() => {
         console.log(match.params.userName);
-      }, [match.params.userName])
+    }, [match.params.userName])
 
     return (
         <div className="profile-wrapper">
@@ -119,7 +164,7 @@ function Profile({ match }) {
             <div className={classes.profileHeaderWrap}>
                 <Grid container spacing={8}>
                     <Grid item xs={4} sm={3}>
-                        <Avatar className={classes.largeAvatar} src={ avatarImg }/>
+                        <Avatar className={classes.largeAvatar} src={avatarImg} />
                     </Grid>
                     <Grid className={classes.profileInfoWrap} item xs={10} sm={9}>
                         {/* <button>Follow</button> */}
@@ -144,7 +189,7 @@ function Profile({ match }) {
             </div>
             <Divider />
             <hr></hr>
-            { currComp }
+            { currComp}
         </div>
     )
 }

@@ -86,6 +86,7 @@ class PostByUserView(ListAPIView):
     Can be used in:
     - User Homepage
     """
+
     serializer_class = PostSerializer
 
     def get_queryset(self):
@@ -101,8 +102,10 @@ class PostForProfileView(ListAPIView):
     """
     serializer_class = ProfilePostSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication, )
 
     def get_queryset(self):
+        self.request.user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
         return Post.objects.filter(user=self.request.user)
 
 
@@ -155,7 +158,7 @@ class PostCreateView(APIView):
             )
             p.save()
             #
-            return Response({"imagelink": p.image.url}, status=status.HTTP_201_CREATED)
+            return Response({"pk": p.pk, "imagelink": p.image.url}, status=status.HTTP_201_CREATED)
         except ParseError:
             raise ParseError("Unsupported image type")
         except Exception as e:
@@ -169,7 +172,7 @@ class PostVote(APIView):
     ! INCOMPLETE
     handles likes and dislikes
     Requires following in post:
-    user, 
+    user,
     post,
     like/dislike=>vote
     """

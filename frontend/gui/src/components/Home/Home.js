@@ -5,21 +5,21 @@ import Dashboard from './Dashboard/Dashboard';
 import SurfBits from './SurfBits/SurfBits';
 import CookNits from './CookNits/CookNits';
 import Profile from './Profile/Profile';
-import {Route} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import './Home.css'
 
 function Home({ handleLogOut }) {
     return (
         <Container>
             <div>
-                <h1 className="header-title">Nitbits <h3 onClick={handleLogOut} className="logout-title">Logout</h3> </h1>
+                <div className="header-title">Nitbits <h3 onClick={handleLogOut} className="logout-title">Logout</h3> </div>
             </div>
             <Navbar />
             <Route exact path="/dashboard" component={Dashboard} />
-			<Route exact path="/surfbits" component={SurfBits} />
-			<Route exact path="/cooknits" component={CookNits} />
-			<Route exact path="/profile" component={Profile} />
-            <Route path="/user/:userName" component={Profile}/>
+            <Route exact path="/surfnits" component={SurfBits} />
+            <Route exact path="/cooknits" component={CookNits} />
+            <Route exact path="/profile" component={Profile} />
+            <Route path="/user/:userName" component={Profile} />
         </Container>
     )
 }
