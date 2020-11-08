@@ -55,6 +55,14 @@ class PostListView(ListAPIView):
     queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
+    def get_serializer_context(self):
+        try: 
+            user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
+        except Exception as e: 
+            user = None
+            print(user)
+        return {'user': user}
+
 
 class PostSearchView(ListAPIView):
     serializer_class = PostSerializer
@@ -179,24 +187,6 @@ class PostCreateView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class PostVote(APIView):
-    """
-    ! INCOMPLETE
-    handles likes and dislikes
-    Requires following in post:
-    user,
-    post,
-    like/dislike=>vote
-    """
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
-
-    def post(self, request):
-        vote = request.POST['vote']
-        post = request.POST['post']
-        user = request.user
-        pass
-
-
 class PostUpdateDescriptionView(UpdateAPIView):
     """
     Post request to Update title and description of a post
@@ -204,6 +194,7 @@ class PostUpdateDescriptionView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializerHiddenUser
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication, )
 
 
 class PostUploadView(UpdateAPIView):
@@ -233,6 +224,7 @@ class PostDeleteView(DestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication,)
 
 
 class CommentListView(ListAPIView):
@@ -270,6 +262,7 @@ class CommentDeleteView(DestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication,)
 
 
 class PostVote(APIView):
@@ -278,10 +271,10 @@ class PostVote(APIView):
 
     def post(self, request):
         user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
-        vote = self.kwargs['vote']
-        post_pk = self.kwargs['post_id']
+        post_pk = int(request.data['post_pk'])
+        vote = int(request.data['vote'])
 
-        self.votingRoutine(user, post_pk, vote)
+        return self.votingRoutine(user, post_pk, vote)
 
     def votingRoutine(self, user: User, post_pk: int, vote: int) -> Response:
         try:

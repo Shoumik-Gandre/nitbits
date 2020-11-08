@@ -14,13 +14,14 @@ function Dashboard() {
 
         const loadData = async () => {
             try {
-                const response = await axios.get(
-                    `http://127.0.0.1:8000/posts/`,
-                    {
-                        cancelToken: source.token,
+                const response = await axios({
+                    method: 'GET',
+                    url: `http://127.0.0.1:8000/posts/`,
+                    headers: {
+                        Authorization: `Token ${localStorage.getItem('token')}`
                     }
-                );
-                console.log(response.data);
+                });
+                // console.log(response.data);
                 setPosts(response.data);
             } catch (err) {
                 if (axios.isCancel(err)) {

@@ -41,14 +41,19 @@ class PostSerializer(serializers.ModelSerializer):
 
     owner = UserSerializer(source="user", read_only=True)
 
+    user_vote = serializers.SerializerMethodField("user_vote_method")
+
     class Meta:
         model = Post
         fields = ('pk', 'owner', 'image', 'description',
-                  'timestamp', 'get_votes', 'comments')
+                  'timestamp', 'get_votes', 'comments', 'user_vote')
 
-    def to_internal_value(self, data):
-        print(data.upvotes)
-        return True
+    def user_vote_method(self, obj):
+        if self.context.get('user') in obj.upvotes.all():
+            return 1
+        elif self.context.get('user') in obj.downvotes.all():
+            return -1
+        else: return 0
 
 
 class ProfilePostSerializer(serializers.ModelSerializer):

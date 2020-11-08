@@ -33,7 +33,7 @@ urlpatterns = [
     path('sortby/new/', PostListViewNew.as_view()),
     path('<int:pk>/update/', PostUpdateView.as_view()),
     path('<int:pk>/delete/', PostDeleteView.as_view()),
-    path('<int:post_pk>/vote/<int:vote>/', PostVote.as_view()),
+    path('vote/', PostVote.as_view()), # POST REQUEST ONLY WITH post_pk, vote
     path('<int:pk>/upload/', PostUploadView.as_view()),
 
     # Comment handling

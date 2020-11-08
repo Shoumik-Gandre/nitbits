@@ -3,7 +3,6 @@ import Post from './Post/Post';
 import './PostList.css'
 
 function PostList({ posts }) {
-  console.log(posts);
   return (
     <div style={{ marginTop: '24px' }}>
       {
