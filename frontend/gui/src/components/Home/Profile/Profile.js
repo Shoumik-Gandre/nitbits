@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
 import avatarImg from '../../../static/images/img_01.jpeg';
+import userDefault from '../../../static/images/user-default.jpg';
 //import postImg from '../../../static/images/img_00.jpeg'
 import { one_post_data } from './onePostData/one_post_data';
 import PostList from '../../PostList/PostList';

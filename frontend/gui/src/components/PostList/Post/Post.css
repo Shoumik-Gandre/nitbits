@@ -1,3 +1,40 @@
+.vcard{
+    background-color: rgba(238, 130, 238, 0.2) !important;
+    border: 2px solid rgba(238, 130, 238, 1) !important;
+}
+
+.icard{
+    /* background-color: rgba(75, 0, 130, 0.2) !important; */
+    background-color: rgba(128, 11, 218, 0.2) !important;
+    border: 2px solid  rgba(128, 11, 218, 1) !important;
+}
+
+.bcard{
+    background-color: rgba(0, 0, 255, 0.2) !important;
+    border: 2px solid rgba(0, 0, 255, 1) !important;
+}
+
+.gcard{
+    background-color: rgba(133, 255, 172, 0.2) !important;
+    border: 2px solid rgba(133, 255, 172, 1) !important;
+}
+
+.ycard{
+    background-color: rgba(255,255,0, 0.2) !important;
+    border: 2px solid rgba(255,255,0, 1) !important;
+}
+
+.ocard{
+    background-color: rgba(255, 165, 0, 0.2) !important;
+    border: 2px solid rgba(255, 165, 0, 1) !important;
+}
+
+.rcard{
+    background-color: rgba(255, 0, 0, 0.2) !important;
+    border: 2px solid rgba(255, 0, 0, 1) !important;
+}
+
+
 .MuiTypography-colorTextSecondary {
     color: rgb(134 133 126) !important;
 }
@@ -9,6 +46,11 @@
 
 .no-upvote{
     color: rgb(133, 255, 172);
+}
+
+.normal-icon{
+    color: lightgrey;
+    font-size: 50px;
 }
 
 .upvote-icon{
