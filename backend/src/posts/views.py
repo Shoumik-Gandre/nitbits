@@ -63,6 +63,13 @@ class PostListView(ListAPIView):
             print(user)
         return {'user': user}
 
+    def get_queryset(self):
+        query_set = super().get_queryset()
+        print(query_set)
+        print(query_set[0].image)
+        return query_set
+
+
 
 class PostSearchView(ListAPIView):
     serializer_class = PostSerializer
@@ -74,7 +81,6 @@ class PostSearchView(ListAPIView):
             result = postresult
         else:
             result = None
-        print(result)
         return result
 
 # sort by :
