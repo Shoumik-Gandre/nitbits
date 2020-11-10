@@ -44,6 +44,8 @@ function ImageUpload({ type, handleContentImage, handleStyledImage }) {
 
     // if(type === 'c') handleContentImage(file);
     // else if(type === 's') handleStyledImage(file);
+    if (type === 'c') handleContentImage(file);
+    else if (type === 's') handleStyledImage(file);
     console.log(file);
   };
 
@@ -75,7 +77,7 @@ function ImageUpload({ type, handleContentImage, handleStyledImage }) {
     <div className="previewComponent">
       <form onSubmit={handleSubmit}>
         <input className="fileInput" type="file" onChange={handleImageChange} />
-        <button type="submit">Submit</button>
+        {/* <button type="submit">Submit</button> */}
         {/* <button className="submitButton" type="submit" onClick={handleSubmit}>
           Upload Image
         </button> */}

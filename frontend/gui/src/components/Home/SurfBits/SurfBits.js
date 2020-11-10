@@ -7,31 +7,21 @@ import Divider from '@material-ui/core/Divider'
 // import Select from '@material-ui/core/Select';
 // import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
-// import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from "@material-ui/core/Button";
 import axios from 'axios';
 import './SurfBits.css'
 
-// const useStyles = makeStyles((theme) => ({
-//     formControl: {
-//         margin: theme.spacing(1),
-//         minWidth: 120,
-//     },
-//     select: {
-//         '&:before': {
-//              borderColor: 'var(--galaxy-blue)',
-//          },
-//          '&:hover:not(.Mui-disabled):before': {
-//              borderColor: 'var(--galaxy-blue)',
-//          }
-//     },
-//     icon: {
-//         fill: "green",
-//     },
-// }));
+const useStyles = makeStyles((theme) => ({
+    submit: {
+        margin: "auto",
+        marginBottom: theme.spacing(2),
+    },
+}));
 
 function SurfBits() {
 
-    //const classes = useStyles();
+    const classes = useStyles();
     const [posts, setPosts] = useState([]);
     const [sortBy, setSortBy] = useState('none');
     const [searchText, setSearchText] = useState("");
@@ -120,10 +110,19 @@ function SurfBits() {
                         <option value="new">New</option>
                     </select>
                 </Grid>
-                <Grid item xs={10} sm={9}>
+                <Grid item xs={7} sm={7}>
                     <input type="text" className="search-text-input" value={searchText} onChange={handleSearchText} placeholder="Search Bits .... " />
-                    <input type="button" onClick={handleSearchQuery} value="Go"/>
                     {/* <h2> Search Bits... </h2> */}
+                </Grid>
+                <Grid item xs={3} sm={2}>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={handleSearchQuery}
+                        className={classes.submit}
+                    >
+                        Go
+                    </Button>
                 </Grid>
             </Grid>
             <Divider />
