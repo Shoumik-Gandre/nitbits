@@ -80,8 +80,8 @@ function Post({ post, c, bc, currCard }) {
 	const classes = useStyles()
 
 	// 0 => no vote, 1 => positive vote, -1 => negative vote
-	const [upvoteState, setUpvoteState] = useState(post.user_vote == 1);
-	const [downvoteState, setDownVoteState] = useState(post.user_vote == -1);
+	const [upvoteState, setUpvoteState] = useState(post.user_vote === 1);
+	const [downvoteState, setDownVoteState] = useState(post.user_vote === -1);
 	const [totalVote, setTotalVote] = useState(post.get_votes);
 
 	const toggleUpvoteState = () => {
@@ -218,7 +218,7 @@ function Post({ post, c, bc, currCard }) {
 					<Grid item xs={8} sm={7}>
 						<CardHeader
 							avatar={
-								<Avatar src={`http://127.0.0.1:8000${post.owner.profile.image}`} />
+								<Avatar src={`${post.owner.profile.image}`} />
 							}
 							action={post.owner.username === user.username &&
 								<IconButton onClick={deletePost}>
@@ -237,7 +237,7 @@ function Post({ post, c, bc, currCard }) {
 								(<div className={classes.photo}>
 									<img
 										className={classes.media}
-										src={`http://127.0.0.1:8000${post.image}`}
+										src={`${post.image}`}
 										alt="alt"
 									/>
 								</div>)}

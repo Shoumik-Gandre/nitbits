@@ -55,23 +55,23 @@ class PostListView(ListAPIView):
     queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
-    def get_serializer_context(self):
+    def get_serializer_context(self, *args, **kwargs):
         try: 
             user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
         except Exception as e: 
             user = None
-            print(user)
-        return {'user': user}
-
-    def get_queryset(self):
-        query_set = super().get_queryset()
-        print(query_set)
-        print(query_set[0].image)
-        return query_set
-
+        print(self.serializer_class.context)
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
 
 
 class PostSearchView(ListAPIView):
+
+    queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
     def get_queryset(self):
@@ -82,6 +82,11 @@ class PostSearchView(ListAPIView):
         else:
             result = None
         return result
+    '''
+    serializer_class = PostSerializer
+
+    
+    '''
 
 # sort by :
 

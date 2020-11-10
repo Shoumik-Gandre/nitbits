@@ -45,5 +45,5 @@ urlpatterns = [
     # delete comment
     path('comments/<int:pk>/delete/', CommentDeleteView.as_view()),
     # Search bar
-    path('search/<str:search>/',PostSearchView.as_view()),
+    path('search/<str:search>/', PostSearchView.as_view()),
 ]

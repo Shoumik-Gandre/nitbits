@@ -55,6 +55,10 @@ class PostSerializer(serializers.ModelSerializer):
             return -1
         else: return 0
 
+    def __init__(self, instance=None, *args, **kwargs):
+        super().__init__(instance=instance, *args, **kwargs)
+        print(self.context['request'])
+
 
 class ProfilePostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(
