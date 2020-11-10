@@ -47,7 +47,34 @@ function Profile({ match }) {
 
     const [posts, setPosts] = useState([]);
 
+    const [profileInfo, setProfileInfo] = useState({
+        "pk": 0,
+        "username": "",
+        "image": null,
+        "num_follows": 0,
+        "num_followers": 0,
+        "num_posts": 0
+    });
+
     useEffect(() => {
+        const loadProfileInfo = async () => {
+            try {
+                const res = await axios({
+                    method: 'POST',
+                    url: `http://127.0.0.1:8000/profiles/userprofile/`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                    }
+                });
+                console.log(res.data);
+                setProfileInfo(res.data);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+
         let source = axios.CancelToken.source();
 
         const loadData = async () => {
@@ -66,7 +93,7 @@ function Profile({ match }) {
                 else {throw err;}
             }
         }
-
+        loadProfileInfo();
         loadData();
 
         return () => {
@@ -101,38 +128,6 @@ function Profile({ match }) {
                             )
                         })
                     }
-                    {/* <Grid item xs={5} sm={4}>
-                        <div className={classes.photo} onClick={handleMyPostDescription} >
-                            <img
-                            className={classes.media}
-                            src={postImg}
-                            />
-                        </div>
-                    </Grid>
-                    <Grid item xs={5} sm={4} >
-                        <div className={classes.photo} onClick={handleMyPostDescription} >
-                            <img
-                            className={classes.media}
-                            src={avatarImg}
-                            />
-                        </div>
-                    </Grid>
-                    <Grid item xs={5} sm={4} >
-                        <div className={classes.photo} onClick={handleMyPostDescription}>
-                            <img
-                            className={classes.media}
-                            src={postImg}
-                            />
-                        </div>
-                    </Grid>
-                    <Grid item xs={5} sm={4} >
-                        <div className={classes.photo} onClick={handleMyPostDescription}>
-                            <img
-                            className={classes.media}
-                            src={avatarImg}
-                            />
-                        </div>
-                    </Grid> */}
                 </Grid>
             </div>
         )
@@ -160,23 +155,22 @@ function Profile({ match }) {
             <div className={classes.profileHeaderWrap}>
                 <Grid container spacing={8}>
                     <Grid item xs={4} sm={3}>
-                        <Avatar className={classes.largeAvatar} src={avatarImg} />
+                        <Avatar className={classes.largeAvatar} src={profileInfo.image} />
                     </Grid>
                     <Grid className={classes.profileInfoWrap} item xs={10} sm={9}>
                         {/* <button>Follow</button> */}
-                        <h3>rajat</h3>
-                        <p> Software Developer </p>
+                        <h3>{profileInfo.username}</h3>
                         <Grid className={classes.userInfoWrap} container spacing={6}>
                             <Grid item xs={5} sm={4}>
-                                <h3 className="user-attr-count">4</h3>
+                                <h3 className="user-attr-count">{profileInfo.num_posts}</h3>
                                 <h3 className="user-attr-name">Posts</h3>
                             </Grid>
                             <Grid className={classes.profileInfoWrap} item xs={5} sm={4}>
-                                <h3 className="user-attr-count">10</h3>
+                                <h3 className="user-attr-count">{profileInfo.num_followers}</h3>
                                 <h3 className="user-attr-name">Followers</h3>
                             </Grid>
                             <Grid className={classes.profileInfoWrap} item xs={5} sm={4}>
-                                <h3 className="user-attr-count">15</h3>
+                                <h3 className="user-attr-count">{profileInfo.num_follows}</h3>
                                 <h3 className="user-attr-name">Following</h3>
                             </Grid>
                         </Grid>
@@ -185,7 +179,7 @@ function Profile({ match }) {
             </div>
             <Divider />
             <hr></hr>
-            { currComp}
+            { currComp }
         </div>
     )
 }

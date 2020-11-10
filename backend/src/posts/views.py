@@ -70,8 +70,6 @@ class PostListView(ListAPIView):
 
 
 class PostSearchView(ListAPIView):
-
-    queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
     def get_queryset(self):
@@ -82,11 +80,6 @@ class PostSearchView(ListAPIView):
         else:
             result = None
         return result
-    '''
-    serializer_class = PostSerializer
-
-    
-    '''
 
 # sort by :
 
@@ -308,3 +301,4 @@ class PostVote(APIView):
             except Exception as e: return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         post.save()
         return Response(status=status.HTTP_200_OK)
+
