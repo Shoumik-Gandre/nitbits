@@ -3,8 +3,8 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
-import avatarImg from '../../../static/images/img_01.jpeg';
-import userDefault from '../../../static/images/user-default.jpg';
+// import avatarImg from '../../../static/images/img_01.jpeg';
+// import userDefault from '../../../static/images/user-default.jpg';
 //import postImg from '../../../static/images/img_00.jpeg'
 import { one_post_data } from './onePostData/one_post_data';
 import PostList from '../../PostList/PostList';
@@ -47,21 +47,34 @@ function Profile({ match }) {
 
     const [posts, setPosts] = useState([]);
 
+    // const [followSt]
+
     const [profileInfo, setProfileInfo] = useState({
         "pk": 0,
         "username": "",
         "image": null,
         "num_follows": 0,
         "num_followers": 0,
-        "num_posts": 0
+        "num_posts": 0,
+        'isfollowing': false,
     });
 
     useEffect(() => {
+
+        let targetUser = match.params.userName;
+        console.log(targetUser);
+
+        
         const loadProfileInfo = async () => {
+            let url = `http://127.0.0.1:8000/profiles/userprofile/`
+            let method = 'POST'
+            if (targetUser) { url = url + `${targetUser}/`; method = 'GET' }
+            console.log(url);
+            console.log('YES IA M')
             try {
                 const res = await axios({
-                    method: 'POST',
-                    url: `http://127.0.0.1:8000/profiles/userprofile/`,
+                    method: method,
+                    url: url,
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Token ${localStorage.getItem('token')}`
@@ -146,8 +159,40 @@ function Profile({ match }) {
     }
 
     useEffect(() => {
+
         console.log(match.params.userName);
+        let targetUser = match.params.userName;
+        console.log(targetUser);
+
+        let source = axios.CancelToken.source();
+
+        const loadData = async () => {
+            try {
+                const response = await axios({
+                    method: 'get',
+                    url: `http://127.0.0.1:8000/posts/user/${targetUser}/`,
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": `Token ${localStorage.getItem('token')}`
+                    },
+                });
+                console.log("particular user posts here : ", response.data)
+                setPosts(response.data)
+            } catch (err) {
+                if (axios.isCancel(err)) {console.log("dashboard caught cancel");} 
+                else {throw err;}
+            }
+        }
+
+        loadData();
+
+        return () => {
+            source.cancel();
+        };
+
     }, [match.params.userName])
+
+    
 
     return (
         <div className="profile-wrapper">
@@ -158,7 +203,7 @@ function Profile({ match }) {
                         <Avatar className={classes.largeAvatar} src={profileInfo.image} />
                     </Grid>
                     <Grid className={classes.profileInfoWrap} item xs={10} sm={9}>
-                        {/* <button>Follow</button> */}
+                        <div className="follow-btn-wrap"><button onClick={handleFollow}>Follow</button></div>
                         <h3>{profileInfo.username}</h3>
                         <Grid className={classes.userInfoWrap} container spacing={6}>
                             <Grid item xs={5} sm={4}>

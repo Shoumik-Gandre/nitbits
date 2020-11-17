@@ -257,7 +257,7 @@ function Post({ post, c, bc, currCard }) {
 						</CardActions>
 					</Grid>
 					<Grid className="comments-wrap" item xs={6} sm={5}>
-						<CommentList user={user} comments={post.comments} />
+						<CommentList user={user} comments={post.comments} post={post} />
 					</Grid>
 				</Grid>
 				<Divider />

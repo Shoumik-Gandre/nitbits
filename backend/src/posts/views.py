@@ -114,8 +114,8 @@ class PostByUserView(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        self.request.user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
-        return Post.objects.filter(user=self.request.user, is_public=True)
+        # self.request.user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
+        return Post.objects.filter(user__username=self.kwargs['user'], is_public=True)
 
 
 class PostForProfileView(ListAPIView):
@@ -248,6 +248,32 @@ class CommentOnPostListView(ListAPIView):
     def get_queryset(self):
         post = self.kwargs['post']
         return Comment.objects.filter(post=post)
+
+
+class CommentCreateView(APIView):
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication, )
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.request.user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
+            post_pk = request.data['post_pk']
+            comment_description = request.data['description']
+            new_comment = Comment(
+                user    = self.request.user,
+                comment = comment_description
+            )
+            new_comment.post_id = post_pk
+            new_comment.save()
+            return Response(
+                {'action', 'comment posted'},
+                status=status.HTTP_201_CREATED
+            )
+        except :
+            return Response(
+                {'action', 'comment not posted'},
+                status=status.HTTP_400_BAD_REQUEST
+            ) 
 
 
 class CommentUpdateView(UpdateAPIView):

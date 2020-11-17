@@ -23,6 +23,7 @@ class ProfileInfoSerializer(serializers.ModelSerializer):
     num_followers = serializers.SerializerMethodField('num_followers_method')
     num_posts = serializers.SerializerMethodField('num_posts_method')
     username = serializers.SerializerMethodField('username_method')
+    isfollowed = serializers.SerializerMethodField('isfollowed_method')
     class Meta:
         model = UserProfile
         fields = (
@@ -31,7 +32,8 @@ class ProfileInfoSerializer(serializers.ModelSerializer):
             'image',
             'num_follows',
             'num_followers',
-            'num_posts'
+            'num_posts',
+            'isfollowed',
         )
 
     def num_follows_method(self, obj):
@@ -45,3 +47,9 @@ class ProfileInfoSerializer(serializers.ModelSerializer):
 
     def username_method(self, obj):
         return obj.user.username
+
+    def isfollowed_method(self, obj):
+        try:
+            return self.context['user'] in obj.user.userprofile.follows
+        except Exception as e:
+            return False

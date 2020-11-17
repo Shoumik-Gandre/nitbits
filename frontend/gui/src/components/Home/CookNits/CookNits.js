@@ -4,7 +4,7 @@ import ImageUpload from './ImageUpload/ImageUpload';
 import PostImage from './PostImage/PostImage';
 import { makeStyles } from '@material-ui/core/styles'
 // import avatarImg from '../../../static/images/img_01.jpeg';
-import postDefault from "../../../static/images/post-default.jpg";
+// import postDefault from "../../../static/images/post-default.jpg";
 import './CookNits.css'
 import axios from 'axios';
 
