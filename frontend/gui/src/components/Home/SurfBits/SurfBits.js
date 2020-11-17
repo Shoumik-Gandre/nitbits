@@ -71,6 +71,7 @@ function SurfBits() {
             method: 'GET',
             url: `http://127.0.0.1:8000/posts/search/${searchText}/`
         }).then(res => {
+            console.log(res.data)
             setPosts(res.data);
         });
     }
@@ -79,30 +80,6 @@ function SurfBits() {
         <div className="surfbits-wrapper">
             <Grid container spacing={8}>
                 <Grid item xs={4} sm={3}>
-                    {/* <FormControl variant="outlined" className={classes.formControl}>
-                        <InputLabel id="demo-simple-select-outlined-label">Sort By</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        value={sortBy}
-                        className={classes.select}
-                        inputProps={{
-                            classes: {
-                                icon: classes.icon,
-                            },
-                        }}
-                        onChange={handleChange}
-                        label="Sort By"
-                        >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={"top"}>Top</MenuItem>
-                        <MenuItem value={"hot"}>Hot</MenuItem>
-                        <MenuItem value={"new"}>New</MenuItem>
-                        <MenuItem value={"rising"}>Rising</MenuItem>
-                        </Select>
-                    </FormControl> */}
                     <select id="lang-dropdown" value={sortBy} onChange={handleChange}>
                         <option value="none">None</option>
                         <option value="top">Top</option>

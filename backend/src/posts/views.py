@@ -55,13 +55,18 @@ class PostListView(ListAPIView):
     queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
 
-    def get_serializer_context(self):
+    def get_serializer_context(self, *args, **kwargs):
         try: 
             user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
         except Exception as e: 
             user = None
-            print(user)
-        return {'user': user}
+        print(self.serializer_class.context)
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
 
 
 class PostSearchView(ListAPIView):
@@ -74,7 +79,6 @@ class PostSearchView(ListAPIView):
             result = postresult
         else:
             result = None
-        print(result)
         return result
 
 # sort by :
@@ -110,8 +114,8 @@ class PostByUserView(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        self.request.user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
-        return Post.objects.filter(user=self.request.user, is_public=True)
+        # self.request.user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
+        return Post.objects.filter(user__username=self.kwargs['user'], is_public=True)
 
 
 class PostForProfileView(ListAPIView):
@@ -246,6 +250,32 @@ class CommentOnPostListView(ListAPIView):
         return Comment.objects.filter(post=post)
 
 
+class CommentCreateView(APIView):
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication, )
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.request.user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
+            post_pk = request.data['post_pk']
+            comment_description = request.data['description']
+            new_comment = Comment(
+                user    = self.request.user,
+                comment = comment_description
+            )
+            new_comment.post_id = post_pk
+            new_comment.save()
+            return Response(
+                {'action', 'comment posted'},
+                status=status.HTTP_201_CREATED
+            )
+        except :
+            return Response(
+                {'action', 'comment not posted'},
+                status=status.HTTP_400_BAD_REQUEST
+            ) 
+
+
 class CommentUpdateView(UpdateAPIView):
     """
     Post request to Update title and description of a post
@@ -297,3 +327,4 @@ class PostVote(APIView):
             except Exception as e: return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         post.save()
         return Response(status=status.HTTP_200_OK)
+
