@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useEffect } from 'react';
 import Post from './Post/Post';
 import './PostList.css'
 
 function PostList({ posts }) {
 
   const style = ["vcard", "icard", "bcard", "gcard", "ycard", "ocard", "rcard"]
+
+  useEffect(() => {
+
+  }, [posts]);
 
   return (
     <div style={{ marginTop: '24px' }}>

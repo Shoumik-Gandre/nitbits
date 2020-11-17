@@ -65,7 +65,9 @@ function CommentList({ user, comments, post }) {
         'description': text,
       }
     })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res)
+      })
   }
 
 
