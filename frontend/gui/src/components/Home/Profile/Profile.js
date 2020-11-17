@@ -49,7 +49,7 @@ function Profile({ match }) {
 
     const [followText, setFollowText] = useState("Follow");
 
-    const [currUser, setCurrUser] = useState(null);
+    const [currUser, setCurrUser] = useState("root");
 
     // const [followSt]
 
@@ -205,7 +205,7 @@ function Profile({ match }) {
         if(followText === "Follow"){
             // unfollow api
             let uploadData = new FormData();
-            uploadData.append('user', currUser);
+            uploadData.append('user', profileInfo.username);
             const response = await axios.post(
                 `http://127.0.0.1:8000/profiles/follow/`,
                 uploadData,

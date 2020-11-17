@@ -31,7 +31,10 @@ class FollowPerson(APIView):
         })
 
     def post(self, request):
-        request.user.userprofile.follow(User.objects.get(username=request.POST['user']).pk)
+        print('-'*80)
+        print(request.data['user'])
+        print('-'*80)
+        request.user.userprofile.follow(User.objects.get(username=request.data['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
@@ -47,7 +50,7 @@ class UnfollowPerson(APIView):
         })
 
     def post(self, request):
-        request.user.userprofile.unfollow(User.objects.get(username=request.POST['user']).pk)
+        request.user.userprofile.unfollow(User.objects.get(username=request.data['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
@@ -92,6 +95,8 @@ class UserInfo(APIView):
 
 
 class UserFollows(APIView):
+
+    authentication_classes = (TokenAuthentication,)
     
     def post(self, request, *args, **kwargs):
         try:
