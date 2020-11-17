@@ -1,0 +1,35 @@
+.follower-card-wrap{
+    background-color: #444857 !important;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    /* border: 2px solid grey; */
+}
+
+.follower-action-btn{
+    background-color: black;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    width: 100px;
+    height: 30px;
+    border-radius: 10px;
+}
+
+.follower-info{
+    text-align: left;
+}
+
+.follower-info-wrap{
+    margin-top: 20px;
+    color: white !important;
+}
+
+.follower-info-username{
+    margin: 0px !important;
+    font-size: 15px;
+}
+
+.follower-info-description{
+    margin: 0px !important;
+    font-size: 15px;
+}

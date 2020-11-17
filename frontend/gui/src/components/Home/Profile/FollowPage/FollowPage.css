@@ -1,0 +1,12 @@
+.followers{
+    padding-left: 300px !important;
+}
+
+.following{
+    padding-right: 300px !important;
+}
+
+.active .item .followers {
+    color: red !important;
+    border-color: red !important;
+}
