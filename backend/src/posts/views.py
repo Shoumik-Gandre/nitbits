@@ -74,8 +74,17 @@ class PostHomeView(APIView):
         user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
         userlist = user.userprofile.follows.all()
         postlist = []
+        postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True).data)
         for user in userlist:
-            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True).data)
+            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True, context={'request': self.request,'format': self.format_kwarg,'view': self,'user': user}).data)
+        return Response(postlist, status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
+        userlist = user.userprofile.follows.all()
+        postlist = []
+        for user in userlist:
+            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True, context={'request': self.request,'format': self.format_kwarg,'view': self,'user': user}).data)
         return Response(postlist, status.HTTP_200_OK)
 
 
