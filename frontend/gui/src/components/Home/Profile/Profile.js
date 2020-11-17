@@ -124,7 +124,7 @@ function Profile({ match }) {
     const handleMyPostDescription = () => {
         // redirect to /post
         
-        setNormal(!normal);
+        setNormal(true);
     }
 
     let currComp;

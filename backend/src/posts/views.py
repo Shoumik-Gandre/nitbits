@@ -43,7 +43,7 @@ from PIL import Image
 import os
 # Neural Style Transfer model:
 try:
-    raise ValueError('Just to skip massive reload time during testing')
+    # raise ValueError('Just to skip massive reload time during testing')
     from .nst.nst import NST
     nst_exception = False
 except Exception as e:
