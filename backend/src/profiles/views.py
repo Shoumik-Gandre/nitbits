@@ -6,7 +6,11 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
-from .serializers import UserProfileSerializerFollows, ProfileInfoSerializer
+from .serializers import (
+    UserProfileSerializerFollows, 
+    ProfileInfoSerializer,
+    ProfileFollowsSerializer
+)
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .models import UserProfile
@@ -27,7 +31,7 @@ class FollowPerson(APIView):
         })
 
     def post(self, request):
-        request.user.userprofile.follow(request.POST['user'])
+        request.user.userprofile.follow(User.objects.get(username=request.POST['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
@@ -43,7 +47,7 @@ class UnfollowPerson(APIView):
         })
 
     def post(self, request):
-        request.user.userprofile.unfollow(request.POST['user'])
+        request.user.userprofile.unfollow(User.objects.get(username=request.POST['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
@@ -90,12 +94,22 @@ class UserInfo(APIView):
 class UserFollows(APIView):
     
     def post(self, request, *args, **kwargs):
-        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
-        return Response({'followers': user.follows})
+        try:
+            user = User.objects.get(username=kwargs['user'])
+            userfollows = list(user.username for user in user.userprofile.follows.all())
+            return Response(userfollows, status.HTTP_200_OK)
+        except Exception as e:
+            return Response([], status.HTTP_200_OK)
 
 
-class UserFollowers(APIView):
+class UserFollowed(APIView):
     
+    authentication_classes = (TokenAuthentication,)
+
     def post(self, request, *args, **kwargs):
-        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
-        return Response({'followers': user.userprofile.follows})
+        try:
+            user = User.objects.get(username=kwargs['user'])
+            userfollowed = list(user.username for user in user.follows.all())
+            return Response(userfollowed, status.HTTP_200_OK)
+        except Exception as e:
+            return Response([], status.HTTP_200_OK)

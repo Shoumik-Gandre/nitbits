@@ -5,6 +5,8 @@ from .views import (
     ProfileInfoView, 
     MyProfileInfoView, 
     UserInfo,
+    UserFollows,
+    UserFollowed,
 )
 
 urlpatterns = [
@@ -13,4 +15,6 @@ urlpatterns = [
     path('userprofile/', MyProfileInfoView.as_view()),
     path('userprofile/<str:user>/', ProfileInfoView.as_view()),
     path('getuser/', UserInfo.as_view()),
+    path('userfollows/<str:user>/', UserFollows.as_view()),
+    path('userfollowed/<str:user>/', UserFollowed.as_view()),
 ]

@@ -53,3 +53,10 @@ class ProfileInfoSerializer(serializers.ModelSerializer):
             return self.context['user'] in obj.user.userprofile.follows
         except Exception as e:
             return False
+
+
+class ProfileFollowsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserProfile
+        fields = ('follows', )
