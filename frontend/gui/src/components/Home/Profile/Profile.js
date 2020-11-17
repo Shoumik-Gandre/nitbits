@@ -47,6 +47,10 @@ function Profile({ match }) {
 
     const [posts, setPosts] = useState([]);
 
+    const [followText, setFollowText] = useState("Follow");
+
+    const [currUser, setCurrUser] = useState(null);
+
     // const [followSt]
 
     const [profileInfo, setProfileInfo] = useState({
@@ -63,6 +67,7 @@ function Profile({ match }) {
 
         let targetUser = match.params.userName;
         console.log(targetUser);
+        setCurrUser(targetUser);
 
         
         const loadProfileInfo = async () => {
@@ -82,6 +87,8 @@ function Profile({ match }) {
                 });
                 console.log(res.data);
                 setProfileInfo(res.data);
+                if(res.data.isfollowing) setFollowText("Unfollow");
+                else setFollowText("Follow");
             }
             catch (err) {
                 console.log(err);
@@ -158,6 +165,8 @@ function Profile({ match }) {
         )
     }
 
+    // const [followText, setFollowText] = useState("Follow");
+
     useEffect(() => {
 
         console.log(match.params.userName);
@@ -192,7 +201,65 @@ function Profile({ match }) {
 
     }, [match.params.userName])
 
-    
+    const handleToggleFollow = async() => {
+        if(followText === "Follow"){
+            // unfollow api
+            let uploadData = new FormData();
+            uploadData.append('user', currUser);
+            const response = await axios.post(
+                `http://127.0.0.1:8000/profiles/follow/`,
+                uploadData,
+                {
+                    headers: {
+                        ...axios.defaults.headers,
+                        "content-type": "multipart/form-data",
+                        "Authorization": `Token ${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+            // const response = await axios({
+            //     method: 'POST',
+            //     url: `http://127.0.0.1:8000/profiles/unfollow/`,
+            //     headers: {
+            //         "content-type": "multipart/form-data",
+            //         "Authorization": `Token ${localStorage.getItem('token')}`
+            //     },
+            //     body: {
+            //         "user": currUser,
+            //     }
+            // });
+            console.log("unfollow response : ", response.data)
+            setFollowText("Unfollow");
+        } else {
+            // follow api
+            let uploadData = new FormData();
+            uploadData.append('user', currUser);
+            const response = await axios.post(
+                `http://127.0.0.1:8000/profiles/unfollow/`,
+                uploadData,
+                {
+                    headers: {
+                        ...axios.defaults.headers,
+                        "content-type": "multipart/form-data",
+                        "Authorization": `Token ${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+            // const response = await axios({
+            //     method: 'POST',
+            //     url: `http://127.0.0.1:8000/profiles/follow/`,
+            //     headers: {
+            //         "content-type": "multipart/form-data",
+            //         "Authorization": `Token ${localStorage.getItem('token')}`
+            //     },
+            //     body: {
+            //         'user': currUser,
+            //     }
+            // });
+            console.log("follow response : ", response.data)
+            setFollowText("Follow");
+        }
+    }
 
     return (
         <div className="profile-wrapper">
@@ -203,7 +270,7 @@ function Profile({ match }) {
                         <Avatar className={classes.largeAvatar} src={profileInfo.image} />
                     </Grid>
                     <Grid className={classes.profileInfoWrap} item xs={10} sm={9}>
-                        <div className="follow-btn-wrap"><button onClick={handleFollow}>Follow</button></div>
+                        <div className="follow-btn-wrap"><button onClick={handleToggleFollow}>{followText}</button></div>
                         <h3>{profileInfo.username}</h3>
                         <Grid className={classes.userInfoWrap} container spacing={6}>
                             <Grid item xs={5} sm={4}>
