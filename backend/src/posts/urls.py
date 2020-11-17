@@ -19,6 +19,7 @@ from .views import (
     PostUploadView,
     PostSearchView,
     PostVote,
+    PostHomeView,
 )
 
 
@@ -29,6 +30,8 @@ urlpatterns = [
     path('create/', PostCreateView.as_view()),
     path('user/<str:user>/', PostByUserView.as_view()),
     path('userprofile/', PostForProfileView.as_view()),
+
+    path('home/', PostHomeView.as_view()),
 
     path('sortby/top/', PostListViewTop.as_view()),
     path('sortby/hot/', PostListViewHot.as_view()),
