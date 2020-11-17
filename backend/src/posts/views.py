@@ -69,6 +69,16 @@ class PostListView(ListAPIView):
         }
 
 
+class PostHomeView(APIView):
+    def post(self, request, *args, **kwargs):
+        user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
+        userlist = user.userprofile.follows.all()
+        postlist = []
+        for user in userlist:
+            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True).data)
+        return Response(postlist, status.HTTP_200_OK)
+
+
 class PostSearchView(ListAPIView):
     serializer_class = PostSerializer
 
