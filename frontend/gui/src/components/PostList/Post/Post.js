@@ -83,6 +83,7 @@ function Post({ post, c, bc, currCard }) {
 	const [upvoteState, setUpvoteState] = useState(post.user_vote === 1);
 	const [downvoteState, setDownVoteState] = useState(post.user_vote === -1);
 	const [totalVote, setTotalVote] = useState(post.get_votes);
+	// console.log(post)
 
 	const toggleUpvoteState = () => {
 		if(!upvoteState) setDownVoteState(false);
@@ -114,7 +115,7 @@ function Post({ post, c, bc, currCard }) {
 			}
 		})
 		.then((response) => {
-			console.log(response);
+			// console.log(response);
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
 		})
@@ -140,7 +141,7 @@ function Post({ post, c, bc, currCard }) {
 				'post_pk': post.pk
 			}
 		}).then(response=> {
-			console.log(response);
+			// console.log(response);
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
 		});
@@ -158,7 +159,7 @@ function Post({ post, c, bc, currCard }) {
 				'Authorization': `Token ${localStorage.getItem('token')}`,
 			},
 		}).then(response=> {
-			console.log(response);
+			// console.log(response);
 			// REMOVE THE POST
 			// CODE HERE
 		});

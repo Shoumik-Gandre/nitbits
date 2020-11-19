@@ -31,9 +31,6 @@ class FollowPerson(APIView):
         })
 
     def post(self, request):
-        print('-'*80)
-        print(request.data['user'])
-        print('-'*80)
         request.user.userprofile.follow(User.objects.get(username=request.data['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
@@ -118,3 +115,7 @@ class UserFollowed(APIView):
             return Response(userfollowed, status.HTTP_200_OK)
         except Exception as e:
             return Response([], status.HTTP_200_OK)
+
+
+class ProfileImageUpdateView(APIView):
+    pass
