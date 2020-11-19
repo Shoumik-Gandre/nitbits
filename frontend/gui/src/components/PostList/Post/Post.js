@@ -14,6 +14,10 @@ import Divider from '@material-ui/core/Divider'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import CommentList from '../CommentList/CommentList';
 import { user } from './post_data';
 import { BiUpvote, BiDownvote } from "react-icons/bi";
@@ -72,7 +76,8 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-function Post({ post, c, bc, currCard }) {
+
+function Post({ post, c, bc, currCard, currentUser }) {
 
 	cc = c;
 	bcc = bc;
@@ -258,7 +263,7 @@ function Post({ post, c, bc, currCard }) {
 						</CardActions>
 					</Grid>
 					<Grid className="comments-wrap" item xs={6} sm={5}>
-						<CommentList user={user} comments={post.comments} post={post} />
+						<CommentList user={user} comments={post.comments} post={post} currentUser={currentUser} />
 					</Grid>
 				</Grid>
 				<Divider />

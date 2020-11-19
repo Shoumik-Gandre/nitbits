@@ -3,13 +3,15 @@ from rest_framework.views import (
 )
 from rest_framework.generics import (
     RetrieveAPIView,
+    UpdateAPIView
 )
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
     UserProfileSerializerFollows, 
     ProfileInfoSerializer,
-    ProfileFollowsSerializer
+    ProfileFollowsSerializer,
+    ProfileImageSerializer,
 )
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -58,16 +60,28 @@ class ProfileInfoView(APIView):
     serializer_class = UserProfileSerializerFollows
 
     def get(self, request, *args, **kwargs):
+        context = {
+                'request': self.request,
+                'format': self.format_kwarg,
+                'view': self,
+                'user': self.kwargs['user']
+            }
         return Response(
-            ProfileInfoSerializer(UserProfile.objects.get(user__username=self.kwargs['user'])).data, 
+            ProfileInfoSerializer(UserProfile.objects.get(user__username=self.kwargs['user']), context=context).data, 
             status.HTTP_200_OK
         )
 
     
     def post(self, request, *args, **kwargs):
         user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
+        context = {
+                'request': self.request,
+                'format': self.format_kwarg,
+                'view': self,
+                'user': user
+        }
         return Response(
-            ProfileInfoSerializer(UserProfile.objects.get(user__username=self.kwargs['user']), context={'user': user}).data, 
+            ProfileInfoSerializer(UserProfile.objects.get(user__username=self.kwargs['user']), context=context).data, 
             status.HTTP_200_OK
         )
 
@@ -79,7 +93,13 @@ class MyProfileInfoView(APIView):
 
     def post(self, request):
         user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
-        return Response(ProfileInfoSerializer(user.userprofile).data)
+        context = {
+                'request': self.request,
+                'format': self.format_kwarg,
+                'view': self,
+                'user': user
+        }
+        return Response(ProfileInfoSerializer(user.userprofile, context=context).data)
 
 
 class UserInfo(APIView):
@@ -118,4 +138,16 @@ class UserFollowed(APIView):
 
 
 class ProfileImageUpdateView(APIView):
-    pass
+    serializer_class = ProfileImageSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (TokenAuthentication,)
+
+    def get(self, request, *args, **kwargs):
+        return Response({'work': 'works'}, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        # user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
+        user = User.objects.get(pk=1)
+        user.userprofile.image = request.data['image']
+        user.save()
+        return Response({'work': 'works'}, status=status.HTTP_200_OK)

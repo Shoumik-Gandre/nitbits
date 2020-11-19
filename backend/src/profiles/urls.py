@@ -7,6 +7,7 @@ from .views import (
     UserInfo,
     UserFollows,
     UserFollowed,
+    ProfileImageUpdateView
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
     path('getuser/', UserInfo.as_view()),
     path('userfollows/<str:user>/', UserFollows.as_view()),
     path('userfollowed/<str:user>/', UserFollowed.as_view()),
+    path('<int:pk>/update-image/', ProfileImageUpdateView.as_view())
 ]

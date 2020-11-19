@@ -5,6 +5,7 @@ import PostImage from './PostImage/PostImage';
 import { makeStyles } from '@material-ui/core/styles'
 // import avatarImg from '../../../static/images/img_01.jpeg';
 // import postDefault from "../../../static/images/post-default.jpg";
+import Button from "@material-ui/core/Button";
 import './CookNits.css'
 import axios from 'axios';
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-function CookNits() {
+function CookNits({ currentUser }) {
 
     const classes = useStyles();
     console.log(window.scrollY);
@@ -86,7 +87,14 @@ function CookNits() {
                 </Grid>
             </Grid>
             <Grid className="get_nst_btn_wrap" container spacing={8}>
-                <button onClick={handleNST}> Get NST </button>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={handleNST}
+                        className={classes.submit}
+                    >
+                     Get NST 
+                    </Button>
             </Grid>
             {
                 nstImage && (

@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SurfBits() {
+function SurfBits({ currentUser }) {
 
     const classes = useStyles();
     const [posts, setPosts] = useState([]);
@@ -102,7 +102,7 @@ function SurfBits() {
                 </Grid>
             </Grid>
             <Divider />
-            <PostList posts={posts} />
+            <PostList posts={posts} currentUser={currentUser} />
         </div>
     )
 }

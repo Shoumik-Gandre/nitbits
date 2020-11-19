@@ -6,7 +6,7 @@ import LSWrapper from './LSWrapper/LSWrapper';
 import Particles from 'react-particles-js';
 import "./LandingPage.css";
 
-function LandingPage({ handleLogIn }) {
+function LandingPage({ handleLogIn, currentUser, setCurrentUser }) {
 
 	const useStyles = makeStyles((theme) => ({
 		landing_container_left: {

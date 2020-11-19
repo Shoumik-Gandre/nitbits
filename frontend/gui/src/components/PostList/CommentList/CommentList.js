@@ -4,6 +4,8 @@ import TextField from '@material-ui/core/TextField'
 import Avatar from '@material-ui/core/Avatar'
 import Icon from '@material-ui/core/Icon'
 import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button';
+
 import { Link } from 'react-router-dom'
 import avatarImg from '../../../static/images/img_01.jpeg';
 import './CommentList.css';
@@ -39,10 +41,16 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function CommentList({ user, comments, post }) {
+function CommentList({ user, comments, post, currentUser, setCurrentUser }) {
 
   const classes = useStyles()
   const [text, setText] = useState('')
+  const [commentState, setCommentState] = useState(comments);
+
+  // useEffect(()=>{
+  //   console.log("inside comment list")
+  //   console.log(currentUser);
+  // }, [currentUser])
 
   const handleChange = event => {
     setText(event.target.value)
@@ -51,7 +59,6 @@ function CommentList({ user, comments, post }) {
 
   const addComment = (event) => {
     // add comment api
-    console.log("Add comment");
 
     axios({
       method: 'POST',
@@ -66,14 +73,29 @@ function CommentList({ user, comments, post }) {
       }
     })
       .then(res => {
-        console.log(res)
+        setCommentState(commentState)
+        setText("")
       })
   }
 
 
-  const deleteComment = (comment) => {
+  const deleteComment = (comment_pk) => {
     // delete comment api
-    console.log('delete comment');
+    setCommentState(commentState.filter(obj => {return obj.pk !== comment_pk}))
+    axios({
+      method: 'DELETE',
+      url: `http://127.0.0.1:8000/posts/comments/${comment_pk}/delete/`,
+      headers: {
+        Authorization: `Token ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      data: {}
+    })
+      .then(res => {
+        console.log(res);
+        comments.push(res.data);
+        setText("")
+      })
   }
 
   const commentBody = comment => {
@@ -94,7 +116,7 @@ function CommentList({ user, comments, post }) {
     <div>
       <CardHeader
         avatar={
-          <Avatar className={classes.smallAvatar} src={avatarImg} />
+          <Avatar className={classes.smallAvatar} src={currentUser?currentUser.image:avatarImg} />
         }
         title={
           <div>
@@ -107,27 +129,38 @@ function CommentList({ user, comments, post }) {
               className={classes.commentField}
               margin="normal"
             />
-            <button onClick={addComment}>post</button>
+            <Button
+                color="primary"
+                variant="contained"
+                onClick={addComment}
+                className={classes.submit}
+            >
+            post
+            </Button>
           </div>
         }
         className={classes.cardHeader}
       />
       {
-        comments.map((comment, i) => {
+        commentState.map((comment, i) => {
           return (
             <div>
               <CardHeader
-                avatar={
-                  <Avatar
-                    className={classes.smallAvatar}
-                    src={comment.owner.profile.image}
-                  />
-                }
+                avatar={<Avatar className={classes.smallAvatar} src={comment.owner.profile.image}/>}
                 title={commentBody(comment)}
                 className={classes.cardHeader}
                 key={i}
               />
-              {user.username === comment.owner.username ? <button>delete</button> : null}
+              {(currentUser&&(currentUser.username === comment.owner.username?(
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => deleteComment(comment.pk)}
+                className={classes.submit}
+              >
+                delete
+              </Button>):null
+              ))}
             </div>
           )
         })

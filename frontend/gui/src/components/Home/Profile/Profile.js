@@ -217,17 +217,6 @@ function Profile({ match }) {
                     },
                 }
             );
-            // const response = await axios({
-            //     method: 'POST',
-            //     url: `http://127.0.0.1:8000/profiles/unfollow/`,
-            //     headers: {
-            //         "content-type": "multipart/form-data",
-            //         "Authorization": `Token ${localStorage.getItem('token')}`
-            //     },
-            //     body: {
-            //         "user": currUser,
-            //     }
-            // });
             console.log("unfollow response : ", response.data)
             setFollowText("Unfollow");
         } else {
@@ -245,17 +234,6 @@ function Profile({ match }) {
                     },
                 }
             );
-            // const response = await axios({
-            //     method: 'POST',
-            //     url: `http://127.0.0.1:8000/profiles/follow/`,
-            //     headers: {
-            //         "content-type": "multipart/form-data",
-            //         "Authorization": `Token ${localStorage.getItem('token')}`
-            //     },
-            //     body: {
-            //         'user': currUser,
-            //     }
-            // });
             console.log("follow response : ", response.data)
             setFollowText("Follow");
         }

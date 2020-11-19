@@ -341,8 +341,14 @@ class CommentCreateView(APIView):
             )
             new_comment.post_id = post_pk
             new_comment.save()
+            context = {
+                'request': self.request,
+                'format': self.format_kwarg,
+                'view': self,
+                'user': self.request.user
+            }
             return Response(
-                {'action', 'comment posted'},
+                CommentSerializer(new_comment, context=context).data,
                 status=status.HTTP_201_CREATED
             )
         except :

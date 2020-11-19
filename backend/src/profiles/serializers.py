@@ -60,3 +60,9 @@ class ProfileFollowsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('follows', )
+
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('image',)
