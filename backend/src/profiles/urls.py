@@ -7,12 +7,16 @@ from .views import (
     UserInfo,
     UserFollows,
     UserFollowed,
-    ProfileImageUpdateView
+    ProfileImageUpdateView,
+    FollowInsecureView,
+    UnfollowInsecureView,
 )
 
 urlpatterns = [
     path('follow/', FollowPerson.as_view()),
     path('unfollow/', UnfollowPerson.as_view()),
+    path('newfollow/', FollowInsecureView.as_view()),
+    path('newunfollow/', UnfollowInsecureView.as_view()),
     path('userprofile/', MyProfileInfoView.as_view()),
     path('userprofile/<str:user>/', ProfileInfoView.as_view()),
     path('getuser/', UserInfo.as_view()),

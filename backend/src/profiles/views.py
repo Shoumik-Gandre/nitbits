@@ -55,6 +55,22 @@ class UnfollowPerson(APIView):
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
+class FollowInsecureView(APIView):
+    def post(self, request, *args, **kwargs):
+        user1 = request.data['user1']
+        user2 = request.data['user2']
+        User.objects.get(username=user1).userprofile.follow(User.objects.get(username=user2).pk)
+        return Response({'success': str(request.user.userprofile.follows.all())})
+
+
+class UnfollowInsecureView(APIView):
+    def post(self, request, *args, **kwargs):
+        user1 = request.data['user1']
+        user2 = request.data['user2']
+        User.objects.get(username=user1).userprofile.unfollow(User.objects.get(username=user2).pk)
+        return Response({'success': str(request.user.userprofile.follows.all())})
+
+
 class ProfileInfoView(APIView):
     queryset = UserProfile
     serializer_class = ProfileInfoSerializer

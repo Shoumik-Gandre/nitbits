@@ -6,9 +6,9 @@ function PostList({ posts, currentUser, handlePosts }) {
 
   const style = ["vcard", "icard", "bcard", "gcard", "ycard", "ocard", "rcard"]
 
-  // useEffect(() => {
-
-  // }, [posts]);
+  useEffect(() => {
+    console.log(posts);
+  }, [posts]);
 
   return (
     <div style={{ marginTop: '24px' }}>

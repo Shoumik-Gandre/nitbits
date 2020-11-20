@@ -56,12 +56,13 @@ function SurfBits({ currentUser }) {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `http://127.0.0.1:8000/posts/home/`,
+                url: `http://127.0.0.1:8000/posts/sortby/${sortBy}/`,
                 headers: {
                     Authorization: `Token ${localStorage.getItem('token')}`
                 }
             });
             setPosts(response.data);
+            console.log(response.data)
         } catch (err) {
             console.log("handlePosts", err);
         }
@@ -72,7 +73,8 @@ function SurfBits({ currentUser }) {
         setSortBy(temp);
         axios({
             method: 'GET',
-            url: `http://127.0.0.1:8000/posts/sortby/${event.target.value}/`
+            url: `http://127.0.0.1:8000/posts/sortby/${event.target.value}/`,
+            headers: { Authorization: `Token ${localStorage.getItem('token')}` }
         }).then(res => {
             setPosts(res.data);
         });
