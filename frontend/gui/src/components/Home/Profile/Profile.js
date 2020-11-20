@@ -6,6 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 // import avatarImg from '../../../static/images/img_01.jpeg';
 // import userDefault from '../../../static/images/user-default.jpg';
 //import postImg from '../../../static/images/img_00.jpeg'
+import { Link } from 'react-router-dom'
 import { one_post_data } from './onePostData/one_post_data';
 import PostList from '../../PostList/PostList';
 import './Profile.css'
@@ -124,7 +125,7 @@ function Profile({ match }) {
     const handleMyPostDescription = () => {
         // redirect to /post
         
-        setNormal(!normal);
+        setNormal(true);
     }
 
     let currComp;
@@ -217,17 +218,6 @@ function Profile({ match }) {
                     },
                 }
             );
-            // const response = await axios({
-            //     method: 'POST',
-            //     url: `http://127.0.0.1:8000/profiles/unfollow/`,
-            //     headers: {
-            //         "content-type": "multipart/form-data",
-            //         "Authorization": `Token ${localStorage.getItem('token')}`
-            //     },
-            //     body: {
-            //         "user": currUser,
-            //     }
-            // });
             console.log("unfollow response : ", response.data)
             setFollowText("Unfollow");
         } else {
@@ -245,17 +235,6 @@ function Profile({ match }) {
                     },
                 }
             );
-            // const response = await axios({
-            //     method: 'POST',
-            //     url: `http://127.0.0.1:8000/profiles/follow/`,
-            //     headers: {
-            //         "content-type": "multipart/form-data",
-            //         "Authorization": `Token ${localStorage.getItem('token')}`
-            //     },
-            //     body: {
-            //         'user': currUser,
-            //     }
-            // });
             console.log("follow response : ", response.data)
             setFollowText("Follow");
         }
@@ -279,11 +258,11 @@ function Profile({ match }) {
                             </Grid>
                             <Grid className={classes.profileInfoWrap} item xs={5} sm={4}>
                                 <h3 className="user-attr-count">{profileInfo.num_followers}</h3>
-                                <h3 className="user-attr-name">Followers</h3>
+                                <h3 className="user-attr-name">{<Link to={"/followers/" + profileInfo.username}>Followers</Link>}</h3>
                             </Grid>
                             <Grid className={classes.profileInfoWrap} item xs={5} sm={4}>
                                 <h3 className="user-attr-count">{profileInfo.num_follows}</h3>
-                                <h3 className="user-attr-name">Following</h3>
+                                <h3 className="user-attr-name">{<Link to={"/following/" + profileInfo.username}>Following</Link>}</h3>
                             </Grid>
                         </Grid>
                     </Grid>

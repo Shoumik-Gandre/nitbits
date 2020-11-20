@@ -19,11 +19,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SurfBits() {
+function SurfBits({ currentUser }) {
 
     const classes = useStyles();
     const [posts, setPosts] = useState([]);
-    const [sortBy, setSortBy] = useState('none');
+    const [sortBy, setSortBy] = useState("hot");
     const [searchText, setSearchText] = useState("");
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function SurfBits() {
         const loadData = async () => {
             try {
                 const response = await axios.get(
-                    `http://127.0.0.1:8000/posts/`,
+                    `http://127.0.0.1:8000/posts/sortby/hot/`,
                     { cancelToken: source.token, }
                 );
                 setPosts(response.data);
@@ -53,10 +53,11 @@ function SurfBits() {
     }, []);
 
     const handleChange = (event) => {
-        setSortBy(event.target.value);
+        let temp = event.target.value;
+        setSortBy(temp);
         axios({
             method: 'GET',
-            url: `http://127.0.0.1:8000/posts/sortby/${sortBy}`
+            url: `http://127.0.0.1:8000/posts/sortby/${event.target.value}/`
         }).then(res => {
             setPosts(res.data);
         });
@@ -71,7 +72,7 @@ function SurfBits() {
             method: 'GET',
             url: `http://127.0.0.1:8000/posts/search/${searchText}/`
         }).then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             setPosts(res.data);
         });
     }
@@ -81,15 +82,13 @@ function SurfBits() {
             <Grid container spacing={8}>
                 <Grid item xs={4} sm={3}>
                     <select id="lang-dropdown" value={sortBy} onChange={handleChange}>
-                        <option value="none">None</option>
-                        <option value="top">Top</option>
                         <option value="hot">Hot</option>
+                        <option value="top">Top</option>
                         <option value="new">New</option>
                     </select>
                 </Grid>
                 <Grid item xs={7} sm={7}>
                     <input type="text" className="search-text-input" value={searchText} onChange={handleSearchText} placeholder="Search Bits .... " />
-                    {/* <h2> Search Bits... </h2> */}
                 </Grid>
                 <Grid item xs={3} sm={2}>
                     <Button
@@ -103,7 +102,7 @@ function SurfBits() {
                 </Grid>
             </Grid>
             <Divider />
-            <PostList posts={posts} />
+            <PostList posts={posts} currentUser={currentUser} />
         </div>
     )
 }

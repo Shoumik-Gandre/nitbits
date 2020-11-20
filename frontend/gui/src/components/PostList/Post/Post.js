@@ -14,6 +14,10 @@ import Divider from '@material-ui/core/Divider'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import CommentList from '../CommentList/CommentList';
 import { user } from './post_data';
 import { BiUpvote, BiDownvote } from "react-icons/bi";
@@ -72,7 +76,11 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-function Post({ post, c, bc, currCard }) {
+
+function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
+
+	console.log(post.get_votes);
+	console.log(typeof(post.get_votes));
 
 	cc = c;
 	bcc = bc;
@@ -83,6 +91,7 @@ function Post({ post, c, bc, currCard }) {
 	const [upvoteState, setUpvoteState] = useState(post.user_vote === 1);
 	const [downvoteState, setDownVoteState] = useState(post.user_vote === -1);
 	const [totalVote, setTotalVote] = useState(post.get_votes);
+	// console.log(post)
 
 	const toggleUpvoteState = () => {
 		if(!upvoteState) setDownVoteState(false);
@@ -96,10 +105,10 @@ function Post({ post, c, bc, currCard }) {
 
 	const clickUpvote = () => {
 
-		toggleUpvoteState();
-		let vote_ = 0;
+		// toggleUpvoteState();
+		let vote_ = 1;
 		// console.log("us", upvoteState);
-		if(!upvoteState) vote_ = 1;
+		if(post.get_votes === 1) vote_ = 0;
 
 		axios({
 			method: "post",
@@ -114,7 +123,8 @@ function Post({ post, c, bc, currCard }) {
 			}
 		})
 		.then((response) => {
-			console.log(response);
+			console.log("clickUpvote", response);
+			handlePosts();
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
 		})
@@ -123,10 +133,10 @@ function Post({ post, c, bc, currCard }) {
 
 	const clickDownvote = () => {
 
-		toggleDownVoteState();
-		let vote_ = 0;
+		// toggleDownVoteState();
+		let vote_ = -1;
 		// console.log("ds", downvoteState);
-		if(!downvoteState) vote_ = -1;
+		if(post.get_votes === -1) vote_ = 0;
 
 		axios({
 			method: "post",
@@ -140,7 +150,8 @@ function Post({ post, c, bc, currCard }) {
 				'post_pk': post.pk
 			}
 		}).then(response=> {
-			console.log(response);
+			console.log("clickDownvote", response);
+			handlePosts();
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
 		});
@@ -158,7 +169,8 @@ function Post({ post, c, bc, currCard }) {
 				'Authorization': `Token ${localStorage.getItem('token')}`,
 			},
 		}).then(response=> {
-			console.log(response);
+			console.log("deletePost", response);
+			handlePosts();
 			// REMOVE THE POST
 			// CODE HERE
 		});
@@ -189,7 +201,7 @@ function Post({ post, c, bc, currCard }) {
             }
         }
 
-        loadData();
+        // loadData();
 
         return () => {
             source.cancel();
@@ -200,17 +212,17 @@ function Post({ post, c, bc, currCard }) {
 		<div>
 			<div className="vote-icons-wrapper">
 				{
-					upvoteState && <div onClick={clickUpvote}><BiUpvote className="upvote-icon" /></div>
+					post.get_votes === 1 && <div onClick={clickUpvote}><BiUpvote className="upvote-icon" /></div>
 				}
 				{
-					!upvoteState && <div onClick={clickUpvote}><BiUpvote className="normal-icon" /></div>
+					post.get_votes !== 1 && <div onClick={clickUpvote}><BiUpvote className="normal-icon" /></div>
 				}
-				<div className="vote-count">{ totalVote }</div>
+				<div className="vote-count">{ post.get_votes }</div>
 				{
-					downvoteState && <div onClick={clickDownvote}><BiDownvote className="downvote-icon" /></div>
+					post.get_votes === -1 && <div onClick={clickDownvote}><BiDownvote className="downvote-icon" /></div>
 				}
 				{
-					!downvoteState && <div onClick={clickDownvote}><BiDownvote className="normal-icon" /></div>
+					post.get_votes !== -1 && <div onClick={clickDownvote}><BiDownvote className="normal-icon" /></div>
 				}
 			</div>
 			<Card className={`${currCard} ${classes.card}`}>
@@ -220,7 +232,7 @@ function Post({ post, c, bc, currCard }) {
 							avatar={
 								<Avatar src={`${post.owner.profile.image}`} />
 							}
-							action={post.owner.username === user.username &&
+							action={post.owner.username === currentUser.username &&
 								<IconButton onClick={deletePost}>
 									<DeleteIcon className={classes.deleteBtn} />
 								</IconButton>
@@ -257,7 +269,7 @@ function Post({ post, c, bc, currCard }) {
 						</CardActions>
 					</Grid>
 					<Grid className="comments-wrap" item xs={6} sm={5}>
-						<CommentList user={user} comments={post.comments} post={post} />
+						<CommentList user={user} comments={post.comments} post={post} currentUser={currentUser} handlePosts={handlePosts} />
 					</Grid>
 				</Grid>
 				<Divider />

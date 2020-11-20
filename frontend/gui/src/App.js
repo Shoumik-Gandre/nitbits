@@ -27,7 +27,8 @@ function App() {
 						Authorization: `Token ${localStorage.getItem('token')}`
 					}
 				});
-				setUser({...response.data, token: `Token ${localStorage.getItem('token')}`});
+				setUser({...response.data, token: `Token ${localStorage.getItem('token')}`})
+				console.log("user is set")
             } catch (err) {
                 if (axios.isCancel(err)) {
                     console.log("App caught cancel");
@@ -35,14 +36,19 @@ function App() {
                     throw err;
                 }
             }
-        }
+		}
 
         loadData();
 
         return () => {
             source.cancel();
         };
-    }, []);
+	}, []);
+	
+	// useEffect(()=>{
+	// 	console.log("Inside APP")
+	// 	console.log(user)
+	// }, [user])
 
 	const handleLogIn = () => {
 		setIsLogin(true);
@@ -69,8 +75,8 @@ function App() {
 
 	return (
 		<div className="App">
-			{!isLogin && <LandingPage handleLogIn={handleLogIn} />}
-			{isLogin && <Home handleLogOut={handleLogOut} />}
+			{!isLogin && <LandingPage handleLogIn={handleLogIn} currentUser={user} setCurrentUser={setUser} />}
+			{isLogin && <Home handleLogOut={handleLogOut} currentUser={user} setCurrentUser={setUser} />}
 		</div>
 	);
 }

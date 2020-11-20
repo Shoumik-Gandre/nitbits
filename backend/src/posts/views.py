@@ -41,9 +41,10 @@ from .serializers import (
 
 from PIL import Image
 import os
+from django.conf import settings
 # Neural Style Transfer model:
 try:
-    # raise ValueError('Just to skip massive reload time during testing')
+    if not settings.ENABLE_NST: raise ValueError('Just to skip massive reload time during testing')
     from .nst.nst import NST
     nst_exception = False
 except Exception as e:
@@ -70,22 +71,29 @@ class PostListView(ListAPIView):
 
 
 class PostHomeView(APIView):
-    def post(self, request, *args, **kwargs):
+
+    def process_request(self, request, *args, **kwargs):
         user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
         userlist = user.userprofile.follows.all()
+        context = {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
         postlist = []
-        postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True).data)
-        for user in userlist:
-            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True, context={'request': self.request,'format': self.format_kwarg,'view': self,'user': user}).data)
+        if user not in userlist:
+            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True, context=context).data)
+        for follow_user in userlist:
+            postlist.extend(PostSerializer(Post.objects.filter(user=follow_user), many=True, context=context).data)
+
         return Response(postlist, status.HTTP_200_OK)
 
+    def post(self, request, *args, **kwargs):
+        return self.process_request(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
-        userlist = user.userprofile.follows.all()
-        postlist = []
-        for user in userlist:
-            postlist.extend(PostSerializer(Post.objects.filter(user=user), many=True, context={'request': self.request,'format': self.format_kwarg,'view': self,'user': user}).data)
-        return Response(postlist, status.HTTP_200_OK)
+        return self.process_request(request, *args, **kwargs)
 
 
 class PostSearchView(ListAPIView):
@@ -100,6 +108,19 @@ class PostSearchView(ListAPIView):
             result = None
         return result
 
+    def get_serializer_context(self, *args, **kwargs):
+        try: 
+            user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
+        except Exception as e: 
+            user = None
+        # print(self.serializer_class.context)
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
+
 # sort by :
 
 
@@ -108,19 +129,52 @@ class PostListViewHot(ListAPIView):
 
     def get_queryset(self):
         yesterday = timezone.now() - datetime.timedelta(days=1)
-        return (Post.objects.filter(timestamp__gte=yesterday).order_by(F('downvotes') - F('upvotes')).filter(is_public=True))
+        return sorted(Post.objects.filter(timestamp__gte=yesterday, is_public=True) , key=lambda a: a.get_votes, reverse=True)
+
+    def get_serializer_context(self, *args, **kwargs):
+        try: user = Token.objects.get(key=self.request.headers['Authorization'].split('Token ')[1]).user
+        except Exception as e: user = None
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
 
 
 class PostListViewNew(ListAPIView):
     queryset = Post.objects.filter(is_public=True).order_by('-timestamp')
     serializer_class = PostSerializer
 
+    def get_serializer_context(self, *args, **kwargs):
+        try: user = Token.objects.get(key=self.request.headers['Authorization'].split('Token ')[1]).user
+        except Exception as e: user = None
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
+
 
 class PostListViewTop(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return (Post.objects.order_by(F('downvotes') - F('upvotes')).filter(is_public=True))
+        return sorted(Post.objects.filter(is_public=True), key=lambda a: a.get_votes, reverse=True)
+
+    def get_serializer_context(self, *args, **kwargs):
+        try: user = Token.objects.get(key=self.request.headers['Authorization'].split('Token ')[1]).user
+        except Exception as e: user = None
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self,
+            'user': user
+        }
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 
 class PostByUserView(ListAPIView):
@@ -135,6 +189,9 @@ class PostByUserView(ListAPIView):
     def get_queryset(self):
         # self.request.user = Token.objects.get(key=(self.request.headers['Authorization'].split('Token ')[1])).user
         return Post.objects.filter(user__username=self.kwargs['user'], is_public=True)
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 
 class PostForProfileView(ListAPIView):
@@ -284,8 +341,14 @@ class CommentCreateView(APIView):
             )
             new_comment.post_id = post_pk
             new_comment.save()
+            context = {
+                'request': self.request,
+                'format': self.format_kwarg,
+                'view': self,
+                'user': self.request.user
+            }
             return Response(
-                {'action', 'comment posted'},
+                CommentSerializer(new_comment, context=context).data,
                 status=status.HTTP_201_CREATED
             )
         except :
