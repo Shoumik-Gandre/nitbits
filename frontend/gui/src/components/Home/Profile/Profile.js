@@ -242,14 +242,14 @@ function Profile({ match }) {
 
     return (
         <div className="profile-wrapper">
-            <h1>Profile</h1>
+            {/* <h1>Profile</h1> */}
             <div className={classes.profileHeaderWrap}>
                 <Grid container spacing={8}>
                     <Grid item xs={4} sm={3}>
                         <Avatar className={classes.largeAvatar} src={profileInfo.image} />
                     </Grid>
                     <Grid className={classes.profileInfoWrap} item xs={10} sm={9}>
-                        <div className="follow-btn-wrap"><button onClick={handleToggleFollow}>{followText}</button></div>
+                        <div className="follow-btn-wrap"><button className="follow-btn" onClick={handleToggleFollow}>{followText}</button></div>
                         <h3>{profileInfo.username}</h3>
                         <Grid className={classes.userInfoWrap} container spacing={6}>
                             <Grid item xs={5} sm={4}>

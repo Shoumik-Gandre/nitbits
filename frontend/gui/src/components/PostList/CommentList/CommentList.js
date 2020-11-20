@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import avatarImg from '../../../static/images/img_01.jpeg';
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
+import Grid from '@material-ui/core/Grid'
 import './CommentList.css';
 import axios from 'axios';
 
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   commentText: {
     backgroundColor: 'rgb(22, 30, 28)',
     padding: theme.spacing(1),
-    margin: `2px ${theme.spacing(2)}px 2px 2px`
+    // margin: `2px ${theme.spacing(2)}px 2px 2px`
   },
   commentDate: {
     display: 'block',
@@ -63,24 +64,47 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser, handle
 
   const addComment = (event) => {
     // add comment api
+    // setText(event.target.value)
 
-    axios({
-      method: 'POST',
-      url: `http://127.0.0.1:8000/posts/${post.pk}/comments/create/`,
-      headers: {
-        Authorization: `Token ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json'
-      },
-      data: {
-        'post_pk': post.pk,
-        'description': text,
-      }
-    })
-      .then(res => {
-        setText("");
-        handlePosts();
-        // setCommentState(commentState)
+    if(event.key === 'Enter'){
+      console.log('enter press here! ')
+      axios({
+        method: 'POST',
+        url: `http://127.0.0.1:8000/posts/${post.pk}/comments/create/`,
+        headers: {
+          Authorization: `Token ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        data: {
+          'post_pk': post.pk,
+          'description': event.target.value,
+        }
       })
+        .then(res => {
+          setText("");
+          handlePosts();
+          // setCommentState(commentState)
+        })
+      return false;
+    }
+
+    // axios({
+    //   method: 'POST',
+    //   url: `http://127.0.0.1:8000/posts/${post.pk}/comments/create/`,
+    //   headers: {
+    //     Authorization: `Token ${localStorage.getItem('token')}`,
+    //     'Content-Type': 'application/json'
+    //   },
+    //   data: {
+    //     'post_pk': post.pk,
+    //     'description': text,
+    //   }
+    // })
+    //   .then(res => {
+    //     setText("");
+    //     handlePosts();
+    //     // setCommentState(commentState)
+    //   })
   }
 
 
@@ -132,18 +156,19 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser, handle
               multiline
               value={text}
               onChange={handleChange}
-              placeholder="Write something ..."
+              onKeyPress={addComment}
+              placeholder="Add Comment ..."
               className={classes.commentField}
               margin="normal"
             />
-            <Button
+            {/* <Button
                 color="primary"
                 variant="contained"
                 onClick={addComment}
                 className={classes.submit}
             >
             post
-            </Button>
+            </Button> */}
           </div>
         }
         className={classes.cardHeader}
@@ -151,22 +176,17 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser, handle
       {
         comments.map((comment, i) => {
           return (
-            <div>
-              <CardHeader
+            <Grid container >
+                <Grid item xs={13} sm={11}>
+                <CardHeader
                 avatar={<Avatar className={classes.smallAvatar} src={comment.owner.profile.image}/>}
                 title={commentBody(comment)}
                 className={classes.cardHeader}
                 key={i}
               />
-              {currentUser.username === comment.owner.username &&
-              // <Button
-              //   color="primary"
-              //   variant="contained"
-              //   onClick={() => deleteComment(comment.pk)}
-              //   className={classes.submit}
-              // >
-              //   delete
-              // </Button>
+                </Grid>
+                <Grid item xs={1} sm={1}>
+                {currentUser.username === comment.owner.username &&
               (
               <IconButton>
 									<div id={comment.pk} onClick={() => {deleteComment(comment.pk)}}>
@@ -175,7 +195,25 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser, handle
 							</IconButton>
               )
               }
-            </div>
+                </Grid>
+            </Grid>
+            // <div>
+            //   <CardHeader
+            //     avatar={<Avatar className={classes.smallAvatar} src={comment.owner.profile.image}/>}
+            //     title={commentBody(comment)}
+            //     className={classes.cardHeader}
+            //     key={i}
+            //   />
+            //   {currentUser.username === comment.owner.username &&
+            //   (
+            //   <IconButton>
+						// 			<div id={comment.pk} onClick={() => {deleteComment(comment.pk)}}>
+            //         <DeleteIcon className={classes.deleteBtn} />
+            //       </div>
+						// 	</IconButton>
+            //   )
+            //   }
+            // </div>
           )
         })
       }

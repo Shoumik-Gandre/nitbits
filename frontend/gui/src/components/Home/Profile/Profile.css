@@ -27,3 +27,14 @@ h3{
     margin-top: 80px;
     /* float: right; */
 }
+
+.follow-btn{
+    float: right;
+    color: white;
+    background-color: blue;
+    border: none;
+    border-radius: 5px;
+    width: 70px;
+    height: 25px;
+    cursor: pointer;
+}

@@ -31,10 +31,25 @@ function Followers({ match }) {
         }
     }
 
-	const handleRemove = (e) => {
+	const handleRemove = async(e) => {
 		console.log("force unfollow to ", match.params.userName);
 		console.log("from ", e.target.id);
 		// need new unfollow api
+		let uploadData = new FormData();
+		uploadData.append('user1', e.target.id);
+		uploadData.append('user2', match.params.userName);
+        const response = await axios.post(
+            `http://127.0.0.1:8000/profiles/newunfollow/`,
+            uploadData,
+            {
+                headers: {
+                    ...axios.defaults.headers,
+                    "content-type": "multipart/form-data",
+                    "Authorization": `Token ${localStorage.getItem('token')}`,
+                },
+            }
+        );
+        console.log("remove response : ", response.data)
 		handleFollowers();
 	}
 

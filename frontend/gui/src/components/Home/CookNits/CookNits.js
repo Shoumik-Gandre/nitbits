@@ -75,7 +75,7 @@ function CookNits({ currentUser }) {
 
     return (
         <div className="cooknits-wrapper">
-            <h1>CookNits</h1>
+            {/* <h1>CookNits</h1> */}
             <Grid container spacing={8}>
                 <Grid item xs={7} sm={6}>
                     <h2>Content Image : </h2>
