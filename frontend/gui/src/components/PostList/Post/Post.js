@@ -77,7 +77,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function Post({ post, c, bc, currCard, currentUser }) {
+function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
+
+	console.log(post.get_votes);
+	console.log(typeof(post.get_votes));
 
 	cc = c;
 	bcc = bc;
@@ -102,10 +105,10 @@ function Post({ post, c, bc, currCard, currentUser }) {
 
 	const clickUpvote = () => {
 
-		toggleUpvoteState();
-		let vote_ = 0;
+		// toggleUpvoteState();
+		let vote_ = 1;
 		// console.log("us", upvoteState);
-		if(!upvoteState) vote_ = 1;
+		if(post.get_votes === 1) vote_ = 0;
 
 		axios({
 			method: "post",
@@ -120,7 +123,8 @@ function Post({ post, c, bc, currCard, currentUser }) {
 			}
 		})
 		.then((response) => {
-			// console.log(response);
+			console.log("clickUpvote", response);
+			handlePosts();
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
 		})
@@ -129,10 +133,10 @@ function Post({ post, c, bc, currCard, currentUser }) {
 
 	const clickDownvote = () => {
 
-		toggleDownVoteState();
-		let vote_ = 0;
+		// toggleDownVoteState();
+		let vote_ = -1;
 		// console.log("ds", downvoteState);
-		if(!downvoteState) vote_ = -1;
+		if(post.get_votes === -1) vote_ = 0;
 
 		axios({
 			method: "post",
@@ -146,7 +150,8 @@ function Post({ post, c, bc, currCard, currentUser }) {
 				'post_pk': post.pk
 			}
 		}).then(response=> {
-			// console.log(response);
+			console.log("clickDownvote", response);
+			handlePosts();
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
 		});
@@ -164,7 +169,8 @@ function Post({ post, c, bc, currCard, currentUser }) {
 				'Authorization': `Token ${localStorage.getItem('token')}`,
 			},
 		}).then(response=> {
-			// console.log(response);
+			console.log("deletePost", response);
+			handlePosts();
 			// REMOVE THE POST
 			// CODE HERE
 		});
@@ -195,7 +201,7 @@ function Post({ post, c, bc, currCard, currentUser }) {
             }
         }
 
-        loadData();
+        // loadData();
 
         return () => {
             source.cancel();
@@ -206,17 +212,17 @@ function Post({ post, c, bc, currCard, currentUser }) {
 		<div>
 			<div className="vote-icons-wrapper">
 				{
-					upvoteState && <div onClick={clickUpvote}><BiUpvote className="upvote-icon" /></div>
+					post.get_votes === 1 && <div onClick={clickUpvote}><BiUpvote className="upvote-icon" /></div>
 				}
 				{
-					!upvoteState && <div onClick={clickUpvote}><BiUpvote className="normal-icon" /></div>
+					post.get_votes !== 1 && <div onClick={clickUpvote}><BiUpvote className="normal-icon" /></div>
 				}
-				<div className="vote-count">{ totalVote }</div>
+				<div className="vote-count">{ post.get_votes }</div>
 				{
-					downvoteState && <div onClick={clickDownvote}><BiDownvote className="downvote-icon" /></div>
+					post.get_votes === -1 && <div onClick={clickDownvote}><BiDownvote className="downvote-icon" /></div>
 				}
 				{
-					!downvoteState && <div onClick={clickDownvote}><BiDownvote className="normal-icon" /></div>
+					post.get_votes !== -1 && <div onClick={clickDownvote}><BiDownvote className="normal-icon" /></div>
 				}
 			</div>
 			<Card className={`${currCard} ${classes.card}`}>
@@ -226,7 +232,7 @@ function Post({ post, c, bc, currCard, currentUser }) {
 							avatar={
 								<Avatar src={`${post.owner.profile.image}`} />
 							}
-							action={post.owner.username === user.username &&
+							action={post.owner.username === currentUser.username &&
 								<IconButton onClick={deletePost}>
 									<DeleteIcon className={classes.deleteBtn} />
 								</IconButton>
@@ -263,7 +269,7 @@ function Post({ post, c, bc, currCard, currentUser }) {
 						</CardActions>
 					</Grid>
 					<Grid className="comments-wrap" item xs={6} sm={5}>
-						<CommentList user={user} comments={post.comments} post={post} currentUser={currentUser} />
+						<CommentList user={user} comments={post.comments} post={post} currentUser={currentUser} handlePosts={handlePosts} />
 					</Grid>
 				</Grid>
 				<Divider />

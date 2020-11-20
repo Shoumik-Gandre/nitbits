@@ -5,9 +5,10 @@ import Avatar from '@material-ui/core/Avatar'
 import Icon from '@material-ui/core/Icon'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
-
 import { Link } from 'react-router-dom'
 import avatarImg from '../../../static/images/img_01.jpeg';
+import IconButton from '@material-ui/core/IconButton'
+import DeleteIcon from '@material-ui/icons/Delete'
 import './CommentList.css';
 import axios from 'axios';
 
@@ -38,10 +39,13 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1.6em',
     verticalAlign: 'middle',
     cursor: 'pointer'
-  }
+  },
+	deleteBtn: {
+		color: "grey",
+	}
 }))
 
-function CommentList({ user, comments, post, currentUser, setCurrentUser }) {
+function CommentList({ user, comments, post, currentUser, setCurrentUser, handlePosts }) {
 
   const classes = useStyles()
   const [text, setText] = useState('')
@@ -73,18 +77,20 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser }) {
       }
     })
       .then(res => {
-        setCommentState(commentState)
-        setText("")
+        setText("");
+        handlePosts();
+        // setCommentState(commentState)
       })
   }
 
 
-  const deleteComment = (comment_pk) => {
+  const deleteComment = (d_pk) => {
     // delete comment api
-    setCommentState(commentState.filter(obj => {return obj.pk !== comment_pk}))
+    // setCommentState(commentState.filter(obj => {return obj.pk !== comment_pk}))
+    // console.log("delete comment ", e.target.id);
     axios({
       method: 'DELETE',
-      url: `http://127.0.0.1:8000/posts/comments/${comment_pk}/delete/`,
+      url: `http://127.0.0.1:8000/posts/comments/${d_pk}/delete/`,
       headers: {
         Authorization: `Token ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
@@ -93,8 +99,9 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser }) {
     })
       .then(res => {
         console.log(res);
-        comments.push(res.data);
+        // comments.push(res.data);
         setText("")
+        handlePosts();
       })
   }
 
@@ -142,7 +149,7 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser }) {
         className={classes.cardHeader}
       />
       {
-        commentState.map((comment, i) => {
+        comments.map((comment, i) => {
           return (
             <div>
               <CardHeader
@@ -151,16 +158,23 @@ function CommentList({ user, comments, post, currentUser, setCurrentUser }) {
                 className={classes.cardHeader}
                 key={i}
               />
-              {(currentUser&&(currentUser.username === comment.owner.username?(
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => deleteComment(comment.pk)}
-                className={classes.submit}
-              >
-                delete
-              </Button>):null
-              ))}
+              {currentUser.username === comment.owner.username &&
+              // <Button
+              //   color="primary"
+              //   variant="contained"
+              //   onClick={() => deleteComment(comment.pk)}
+              //   className={classes.submit}
+              // >
+              //   delete
+              // </Button>
+              (
+              <IconButton>
+									<div id={comment.pk} onClick={() => {deleteComment(comment.pk)}}>
+                    <DeleteIcon className={classes.deleteBtn} />
+                  </div>
+							</IconButton>
+              )
+              }
             </div>
           )
         })

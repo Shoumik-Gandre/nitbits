@@ -5,6 +5,8 @@ import Dashboard from './Dashboard/Dashboard';
 import SurfBits from './SurfBits/SurfBits';
 import CookNits from './CookNits/CookNits';
 import Profile from './Profile/Profile';
+import Followers from './Profile/FollowPage/Followers/Followers';
+import Following from './Profile/FollowPage/Following/Following';
 import { Route } from 'react-router-dom';
 import axios from 'axios';
 import './Home.css'
@@ -51,6 +53,8 @@ function Home({ handleLogOut, currentUser, setCurrentUser }) {
             <Route exact path="/cooknits" render={(props) => <CookNits {...props} currentUser={currentUser} />} />
             <Route exact path="/profile" component={Profile}/>
             <Route path="/user/:userName" component={Profile}/>
+            <Route path="/followers/:userName" component={Followers} />
+            <Route path="/following/:userName" component={Following} />
         </Container>
     )
 }

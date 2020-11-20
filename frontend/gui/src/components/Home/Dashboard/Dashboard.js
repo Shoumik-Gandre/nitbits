@@ -14,6 +14,21 @@ function Dashboard({ currentUser, setCurrentUser }) {
     //     console.log(currentUser);
     // }, [currentUser])
 
+    const handlePosts = async() => {
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: `http://127.0.0.1:8000/posts/home/`,
+                headers: {
+                    Authorization: `Token ${localStorage.getItem('token')}`
+                }
+            });
+            setPosts(response.data);
+        } catch (err) {
+            console.log("handlePosts", err);
+        }
+    }
+
     useEffect(() => {
         if (!currentUser){
             let source = axios.CancelToken.source();
@@ -70,7 +85,7 @@ function Dashboard({ currentUser, setCurrentUser }) {
     return (
         <div className="dashboard-wrapper">
             <h1>Home</h1>
-            <PostList posts={posts} currentUser={currentUser}/>
+            <PostList posts={posts} currentUser={currentUser} handlePosts={handlePosts} />
         </div>
     )
 }
