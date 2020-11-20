@@ -79,8 +79,8 @@ const useStyles = makeStyles(theme => ({
 
 function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
 
-	console.log(post.get_votes);
-	console.log(typeof(post.get_votes));
+	//console.log(post.get_votes);
+	//console.log(typeof(post.get_votes));
 
 	cc = c;
 	bcc = bc;
@@ -123,7 +123,7 @@ function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
 			}
 		})
 		.then((response) => {
-			console.log("clickUpvote", response);
+			//console.log("clickUpvote", response);
 			handlePosts();
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
@@ -150,7 +150,7 @@ function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
 				'post_pk': post.pk
 			}
 		}).then(response=> {
-			console.log("clickDownvote", response);
+			//console.log("clickDownvote", response);
 			handlePosts();
 			// Change the number of votes and user_vote on this post
 			// CODE HERE
@@ -169,7 +169,7 @@ function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
 				'Authorization': `Token ${localStorage.getItem('token')}`,
 			},
 		}).then(response=> {
-			console.log("deletePost", response);
+			//("deletePost", response);
 			handlePosts();
 			// REMOVE THE POST
 			// CODE HERE

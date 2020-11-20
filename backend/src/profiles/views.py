@@ -80,6 +80,7 @@ class FollowCheckView(APIView):
         except :
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProfileInfoView(APIView):
     queryset = UserProfile
     serializer_class = ProfileInfoSerializer
