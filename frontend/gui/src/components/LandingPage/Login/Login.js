@@ -52,6 +52,7 @@ function Login({ handleSignupOn, handleLogIn }) {
 
     const handleLogin = () => {
       // login api
+      localStorage.setItem('luser', user.username);
       axios.post('http://127.0.0.1:8000/rest-auth/login/', 
       { 
         ...user, 

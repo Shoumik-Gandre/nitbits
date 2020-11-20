@@ -51,8 +51,8 @@ function Home({ handleLogOut, currentUser, setCurrentUser }) {
             <Route exact path="/dashboard" render={(props) => <Dashboard {...props} currentUser={currentUser} setCurrentUser={setCurrentUser} />} />
             <Route exact path="/surfnits" render={(props) => <SurfBits {...props} currentUser={currentUser} />} />
             <Route exact path="/cooknits" render={(props) => <CookNits {...props} currentUser={currentUser} />} />
-            <Route exact path="/profile" component={Profile}/>
-            <Route path="/user/:userName" component={Profile}/>
+            <Route exact path="/profile" component={Profile} currentUser={currentUser} />
+            <Route path="/user/:userName" component={Profile} currentUser={currentUser} />
             <Route path="/followers/:userName" component={Followers} />
             <Route path="/following/:userName" component={Following} />
         </Container>

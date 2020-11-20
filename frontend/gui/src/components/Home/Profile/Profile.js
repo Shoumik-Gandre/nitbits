@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-function Profile({ match }) {
+function Profile({ match, currUser }) {
 
     const classes = useStyles();
 
@@ -50,7 +50,7 @@ function Profile({ match }) {
 
     const [followText, setFollowText] = useState("Follow");
 
-    const [currUser, setCurrUser] = useState("root");
+    // const [currUser, setCurrUser] = useState("root");
 
     // const [followSt]
 
@@ -66,9 +66,50 @@ function Profile({ match }) {
 
     useEffect(() => {
 
-        let targetUser = match.params.userName;
+        let loggedInUser = localStorage.getItem('luser');
+        let targetUser = match.params.userName ? match.params.userName : loggedInUser;
+
+        console.log(loggedInUser);
         console.log(targetUser);
-        setCurrUser(targetUser);
+
+        let uploadData = new FormData();
+        uploadData.append('user1', loggedInUser);
+        uploadData.append('user2', targetUser);
+
+        const checkFollow = async() => {
+            const response = await axios.post(
+                `http://127.0.0.1:8000/profiles/checkfollow/`,
+                uploadData,
+                {
+                    headers: {
+                        ...axios.defaults.headers,
+                        "content-type": "multipart/form-data",
+                        "Authorization": `Token ${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+            if(response.data) setFollowText("UnFollow");
+            else setFollowText("Follow");
+            console.log("check follow response : ", response.data)
+        }
+
+        checkFollow();
+
+        // const response = await axios.post(
+        //     `http://127.0.0.1:8000/profiles/checkfollow/`,
+        //     uploadData,
+        //     {
+        //         headers: {
+        //             ...axios.defaults.headers,
+        //             "content-type": "multipart/form-data",
+        //             "Authorization": `Token ${localStorage.getItem('token')}`,
+        //         },
+        //     }
+        // );
+        // console.log("check follow response : ", response.data)
+
+        // console.log(targetUser);
+        // setCurrUser(targetUser);
 
         
         const loadProfileInfo = async () => {
@@ -203,10 +244,14 @@ function Profile({ match }) {
     }, [match.params.userName])
 
     const handleToggleFollow = async() => {
+
+        let tuser = match.params.userName ? match.params.userName : localStorage.getItem('luser');
+
         if(followText === "Follow"){
             // unfollow api
             let uploadData = new FormData();
-            uploadData.append('user', profileInfo.username);
+            // uploadData.append('user', profileInfo.username);
+            uploadData.append('user', tuser);
             const response = await axios.post(
                 `http://127.0.0.1:8000/profiles/follow/`,
                 uploadData,
@@ -223,7 +268,8 @@ function Profile({ match }) {
         } else {
             // follow api
             let uploadData = new FormData();
-            uploadData.append('user', currUser);
+            // uploadData.append('user', currUser);
+            uploadData.append('user', tuser);
             const response = await axios.post(
                 `http://127.0.0.1:8000/profiles/unfollow/`,
                 uploadData,

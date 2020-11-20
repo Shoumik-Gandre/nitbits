@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from 'react-router-dom'
 import './PostImage.css';
 import axios from "axios";
 
@@ -84,7 +85,7 @@ function PostImage({ pk }) {
                     onClick={handlePostUpload}
                     className={classes.submit}
                 >
-                    Upload
+                    <Link to={"/dashboard/"}>Upload</Link>
                 </Button>
             </CardActions>
         </Card>
