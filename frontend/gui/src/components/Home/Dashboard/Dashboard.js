@@ -84,7 +84,7 @@ function Dashboard({ currentUser, setCurrentUser }) {
 
     return (
         <div className="dashboard-wrapper">
-            <h1>Home</h1>
+            {/* <h1>Home</h1> */}
             <PostList posts={posts} currentUser={currentUser} handlePosts={handlePosts} />
         </div>
     )

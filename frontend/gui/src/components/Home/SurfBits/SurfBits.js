@@ -26,13 +26,28 @@ function SurfBits({ currentUser }) {
     const [sortBy, setSortBy] = useState("hot");
     const [searchText, setSearchText] = useState("");
 
+    const handlePosts = async() => {
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: `http://127.0.0.1:8000/posts/sortby/${sortBy}/`,
+                headers: {
+                    Authorization: `Token ${localStorage.getItem('token')}`
+                }
+            });
+            setPosts(response.data);
+        } catch (err) {
+            console.log("handlePosts", err);
+        }
+    }
+
     useEffect(() => {
         let source = axios.CancelToken.source();
 
         const loadData = async () => {
             try {
                 const response = await axios.get(
-                    `http://127.0.0.1:8000/posts/sortby/hot/`,
+                    `http://127.0.0.1:8000/posts/sortby/${sortBy}/`,
                     { cancelToken: source.token, }
                 );
                 setPosts(response.data);
@@ -102,7 +117,7 @@ function SurfBits({ currentUser }) {
                 </Grid>
             </Grid>
             <Divider />
-            <PostList posts={posts} currentUser={currentUser} />
+            <PostList posts={posts} currentUser={currentUser} handlePosts={handlePosts} />
         </div>
     )
 }
