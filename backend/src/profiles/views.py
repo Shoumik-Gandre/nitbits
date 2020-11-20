@@ -123,6 +123,8 @@ class UserFollows(APIView):
         except Exception as e:
             return Response([], status.HTTP_200_OK)
 
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class UserFollowed(APIView):
     
@@ -130,11 +132,15 @@ class UserFollowed(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(username=kwargs['user'])
-            userfollowed = list(user.username for user in user.follows.all())
+            currentuser = User.objects.get(username=kwargs['user'])
+            userfollowed = list(user.user.username for user in currentuser.follows.all())
             return Response(userfollowed, status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return Response([], status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 
 class ProfileImageUpdateView(APIView):
