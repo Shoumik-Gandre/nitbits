@@ -33,6 +33,7 @@ class FollowPerson(APIView):
         })
 
     def post(self, request):
+        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
         request.user.userprofile.follow(User.objects.get(username=request.data['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
@@ -49,6 +50,7 @@ class UnfollowPerson(APIView):
         })
 
     def post(self, request):
+        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
         request.user.userprofile.unfollow(User.objects.get(username=request.data['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
