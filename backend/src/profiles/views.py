@@ -71,6 +71,15 @@ class UnfollowInsecureView(APIView):
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
+class FollowCheckView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            user1 = User.objects.get(username=request.data['user1'])
+            user2 = User.objects.get(username=request.data['user2'])
+            return Response({'status': user2 in user1.userprofile.follows.all()}, status=status.HTTP_200_OK)
+        except :
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 class ProfileInfoView(APIView):
     queryset = UserProfile
     serializer_class = ProfileInfoSerializer
