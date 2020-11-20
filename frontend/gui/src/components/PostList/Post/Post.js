@@ -211,19 +211,11 @@ function Post({ post, c, bc, currCard, currentUser, handlePosts }) {
 	return (
 		<div>
 			<div className="vote-icons-wrapper">
-				{
-					post.get_votes === 1 && <div onClick={clickUpvote}><BiUpvote className="upvote-icon" /></div>
-				}
-				{
-					post.get_votes !== 1 && <div onClick={clickUpvote}><BiUpvote className="normal-icon" /></div>
-				}
+				{post.get_votes === 1 && <div onClick={clickUpvote}><BiUpvote className="upvote-icon" /></div>}
+				{post.get_votes !== 1 && <div onClick={clickUpvote}><BiUpvote className="normal-icon" /></div>}
 				<div className="vote-count">{ post.get_votes }</div>
-				{
-					post.get_votes === -1 && <div onClick={clickDownvote}><BiDownvote className="downvote-icon" /></div>
-				}
-				{
-					post.get_votes !== -1 && <div onClick={clickDownvote}><BiDownvote className="normal-icon" /></div>
-				}
+				{post.get_votes === -1 && <div onClick={clickDownvote}><BiDownvote className="downvote-icon" /></div>}
+				{post.get_votes !== -1 && <div onClick={clickDownvote}><BiDownvote className="normal-icon" /></div>}
 			</div>
 			<Card className={`${currCard} ${classes.card}`}>
 				<Grid container spacing={8}>

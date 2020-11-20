@@ -67,12 +67,29 @@ function SurfBits({ currentUser }) {
         };
     }, []);
 
+    const handlePosts = async() => {
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: `http://127.0.0.1:8000/posts/sortby/${sortBy}/`,
+                headers: {
+                    Authorization: `Token ${localStorage.getItem('token')}`
+                }
+            });
+            setPosts(response.data);
+            console.log(response.data)
+        } catch (err) {
+            console.log("handlePosts", err);
+        }
+    }
+
     const handleChange = (event) => {
         let temp = event.target.value;
         setSortBy(temp);
         axios({
             method: 'GET',
-            url: `http://127.0.0.1:8000/posts/sortby/${event.target.value}/`
+            url: `http://127.0.0.1:8000/posts/sortby/${event.target.value}/`,
+            headers: { Authorization: `Token ${localStorage.getItem('token')}` }
         }).then(res => {
             setPosts(res.data);
         });

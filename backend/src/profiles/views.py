@@ -33,6 +33,7 @@ class FollowPerson(APIView):
         })
 
     def post(self, request):
+        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
         request.user.userprofile.follow(User.objects.get(username=request.data['user']).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
@@ -49,7 +50,24 @@ class UnfollowPerson(APIView):
         })
 
     def post(self, request):
+        user = Token.objects.get(key=(request.headers['Authorization'].split('Token ')[1])).user
         request.user.userprofile.unfollow(User.objects.get(username=request.data['user']).pk)
+        return Response({'success': str(request.user.userprofile.follows.all())})
+
+
+class FollowInsecureView(APIView):
+    def post(self, request, *args, **kwargs):
+        user1 = request.data['user1']
+        user2 = request.data['user2']
+        User.objects.get(username=user1).userprofile.follow(User.objects.get(username=user2).pk)
+        return Response({'success': str(request.user.userprofile.follows.all())})
+
+
+class UnfollowInsecureView(APIView):
+    def post(self, request, *args, **kwargs):
+        user1 = request.data['user1']
+        user2 = request.data['user2']
+        User.objects.get(username=user1).userprofile.unfollow(User.objects.get(username=user2).pk)
         return Response({'success': str(request.user.userprofile.follows.all())})
 
 
@@ -123,6 +141,8 @@ class UserFollows(APIView):
         except Exception as e:
             return Response([], status.HTTP_200_OK)
 
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class UserFollowed(APIView):
     
@@ -130,11 +150,15 @@ class UserFollowed(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(username=kwargs['user'])
-            userfollowed = list(user.username for user in user.follows.all())
+            currentuser = User.objects.get(username=kwargs['user'])
+            userfollowed = list(user.user.username for user in currentuser.follows.all())
             return Response(userfollowed, status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return Response([], status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 
 class ProfileImageUpdateView(APIView):
